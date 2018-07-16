@@ -18,3 +18,5 @@ fields:
   type: boolean
   hidden: false
   default: ''
+pages:
+- content/about/hgghfghfgh.md
