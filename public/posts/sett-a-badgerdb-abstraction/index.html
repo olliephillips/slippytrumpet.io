@@ -1,0 +1,331 @@
+    <!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Ollie Phillips">
+		<meta name="description" content="A little Go package to make BadgerDB easier (for me) to work with">
+		<meta name="generator" content="Hugo 0.18-DEV" />
+		<title>Sett, a BadgerDB abstraction &middot; slippytrumpet.io</title>
+		<link rel="shortcut icon" href="https://slippytrumpet.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/style.css">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://slippytrumpet.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='https://slippytrumpet.io/about'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Sett, a BadgerDB abstraction</h1>
+                    <h2 class="headline">
+                    May 4, 2018 
+                    <br><br>
+                    Posted in: 
+                    
+                        
+                            <a href="https://slippytrumpet.io/categories/programming">programming</a>
+                        
+                    
+                      
+                    <br>
+                    Tagged: 
+                    
+                        
+                            <a href="https://slippytrumpet.io/tags/golang">golang</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/badgerdb">badgerdb</a>
+                        
+                    
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<h2 id="a-little-go-package-to-make-badgerdb-easier-for-me-to-work-with">A little Go package to make BadgerDB easier (for me) to work with</h2>
+
+<p>I&rsquo;ve noticed that as an &ldquo;older&rdquo; developer, often, one of the first things I&rsquo;ll do with a new package/API I&rsquo;m using, is abstract it into just the bits I need and/or that my cognitive resources can cope with.</p>
+
+<p>The end result is often something akin to plain english (in terms of code), and while I&rsquo;m not sure this says much for my cognition and memory, I do often wonder why this is not better syntax full stop?</p>
+
+<p>Here&rsquo;s an example. This package, named <a href="https://github.com/olliephillips/sett">Sett</a>, abstracts the <a href="https://github.com/dgraph-io/badger">BadgerDB</a> API, the focus simply on easy reuse of the BadgerDB methods that I&rsquo;m likely to want to use most frequently.</p>
+
+<p>I&rsquo;m not suggesting there&rsquo;s anything wrong with the BadgerDB API, only that, for me, the syntax seems quite complex and is therefore not easy to recall. Hence me writing Sett which literally just hides the complicated code enabling me to be more productive with BadgerDB.</p>
+
+<p>To give one example, below we retrieve the value of a single key  from the data store and print it. First with the BadgerDB method, and then with Sett.</p>
+
+<h3 id="get-with-badgerdb">Get with BadgerDB</h3>
+
+<pre><code>// BadgerDB
+var answer []byte
+err := db.View(func(txn *badger.Txn) error {
+  item, err := txn.Get([]byte(&quot;question&quot;))
+  if err != nil {
+    return err
+  }
+  answer, err := item.Value()
+  if err != nil {
+    return err
+  }
+  return nil
+})
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Printf(&quot;The answer is: %s\n&quot;, answer)
+</code></pre>
+
+<p><br/></p>
+
+<h3 id="get-with-sett">Get with Sett</h3>
+
+<pre><code>// Sett
+answer, err := db.Get(&quot;question&quot;)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Printf(&quot;The answer is: %s\n&quot;, answer)
+</code></pre>
+
+<p><br/>
+Which version can you remember?</p>
+
+<p>I should however point out that in BadgerDB, <code>db.View</code> is a read transaction wrapper.  So, while the above examples both include a single <code>Get</code> transaction, BadgerDB could accomodate more.</p>
+
+<p>We could for example retrieve a second key in the same transaction, which would doubtless be more efficient than the two sequential <code>db.View</code> transactions, required to get two keys when using Sett.</p>
+
+<p>But, realistically, how often will I want more than one key, selected by specific key? Should I find the need, a small modification to the Sett API could facilitate the return of multples keys in the one <code>GET</code> call.</p>
+
+<h2 id="virtual-tables">&ldquo;Virtual&rdquo; tables</h2>
+
+<p>One feature of the Sett API that I find indispensible, is virtual tables.</p>
+
+<p>Tables are effectively created by adding a prefix to the key which is stored in BadgerDB, hence virtual, since tables are not a feature of BadgerDB.</p>
+
+<p>With an interface formalised through the Sett API, I&rsquo;ve found it much easier to reason about the data I&rsquo;m working with, by thinking in terms of tables.</p>
+
+<p>Here&rsquo;s an example which shows how the use of these virtual tables allows key reuse.</p>
+
+<pre><code>s.Table(&quot;client&quot;).Set(&quot;1234&quot;, &quot;client data&quot;)
+// real key is &quot;client1234&quot;
+s.Table(&quot;client&quot;).Get(&quot;1234&quot;)
+// returns &quot;client data&quot;
+
+s.Table(&quot;supplier&quot;).Set(&quot;1234&quot;, &quot;supplier data&quot;)
+// real key is &quot;supplier1234&quot;
+s.Table(&quot;supplier&quot;).Get(&quot;1234&quot;)
+// returns &quot;supplier data&quot;
+</code></pre>
+
+<p><br/>
+Tables also allow us to implement other nice features such as <code>Drop()</code> which, as you might expect, deletes the virtual table or more accurately, all keys with the table prefix.</p>
+
+<h2 id="updates">Updates</h2>
+
+<p>BadgerDB also includes a <code>db.Update</code> transaction wrapper designed to wrap <code>Set</code> and <code>Delete</code> transactions, and it&rsquo;s possible to write or delete multiple items by key.</p>
+
+<p>This is definitely something I want to do efficiently via Sett, so I implemented batch updates - and the API is not dissimilar to the functionality that used to exist in BadgerDB itself!</p>
+
+<p>Items are added to the dataset to be stored using <code>Batchcup()</code>`.</p>
+
+<p>Large datasets are split into smaller batches of 500 (by default) and each batch of 500 is passed to a goroutine tasked with inserting those 500 keys. We can achieve very high write speed using concurrency and goroutines, though optimum batchsize will depend on size of the dataset and the performance of your hardware.</p>
+
+<p>Sett splits the dataset into batches for you, in the background, no need to write your own goroutines.</p>
+
+<p>Here&rsquo;s a very simple example which creates a batch of three keys/values, before submitting the batch to BadgerDB for insertion to the &ldquo;client&rdquo; table.</p>
+
+<pre><code>s.Batchup(&quot;hello&quot;, &quot;world&quot;)
+s.Batchup(&quot;hello-again&quot;, &quot;world&quot;)
+s.Batchup(&quot;goodbye&quot;, &quot;world&quot;)
+
+s.Table(&quot;client&quot;).SetBatch()
+</code></pre>
+
+<p><br/>
+There&rsquo;s more to Sett, and the README on Github covers it.</p>
+
+<p>And there&rsquo;s room to improve it. One area of concern is reporting and returning from goroutines which error, and this is something I&rsquo;ll be looking into.</p>
+
+<p>If you find Sett useful, let me know in the comments. If I&rsquo;ve made any errors please also let me know. I&rsquo;m always learning.</p>
+
+                </section>
+               </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/slippytrumpet">
+                        <img class="avatar" src="https://slippytrumpet.io/images/avatar.png">
+                        <div>
+                            <span class="dark">Ollie Phillips</span>
+                            <span></span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fslippytrumpet.io%2fposts%2fsett-a-badgerdb-abstraction%2f - Sett%2c%20a%20BadgerDB%20abstraction by @slippytrumpet"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'slippytrumpet';
+    var disqus_identifier = 'https:\/\/slippytrumpet.io\/posts\/sett-a-badgerdb-abstraction\/';
+    var disqus_title = 'Sett, a BadgerDB abstraction';
+    var disqus_url = 'https:\/\/slippytrumpet.io\/posts\/sett-a-badgerdb-abstraction\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/sett-a-badgerdb-abstraction/">Sett, a BadgerDB abstraction<aside class="dates">May 4</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/octogon-gcode-file-uploader/">Octogon G-Code File Uploader<aside class="dates">Dec 5</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/3d-printed-drone-build/">3D Printing a Racing Drone<aside class="dates">Nov 30</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/experiments-with-message-queuing-over-ethernet-frames/">Experiments with Messaging over Ethernet Frames<aside class="dates">Jul 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/running-your-app-as-service-on-pi-zero-w/">Running your Application as a Service on Pi Zero W<aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/3d-printing-learnings-shared/">3D Printing. Learnings shared<aside class="dates">May 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/webbluetooth-to-mqtt-gateway/">Web Bluetooth to MQTT Gateway with Puck.js<aside class="dates">Apr 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/raspberry-pi-zero-w-setup/">Raspberry Pi Zero W &#34;headless&#34; Setup<aside class="dates">Mar 17</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/a-little-bit-of-web-bluetooth/">A little bit of Web Bluetooth<aside class="dates">Feb 9</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/building-an-rc-car-with-espruino-on-esp8266/">Building a Remote Control Car with Espruino on ESP8266<aside class="dates">Nov 16</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.github.com/olliephillips">
+        github
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2018 Ollie Phillips
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://slippytrumpet.io/js/main.js"></script>
+<script src="https://slippytrumpet.io/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-83287802-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+    </body>
+</html>

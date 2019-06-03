@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>slippytrumpet.io</title>
+    <link>https://slippytrumpet.io/tags/lan/index.xml</link>
+    <description>Recent content on slippytrumpet.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="https://slippytrumpet.io/tags/lan/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Experiments with Messaging over Ethernet Frames</title>
+      <link>https://slippytrumpet.io/posts/experiments-with-message-queuing-over-ethernet-frames/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/experiments-with-message-queuing-over-ethernet-frames/</guid>
+      <description>
+
+&lt;h2 id=&#34;in-his-article-network-protocol-breakdown-ethernet-and-go-https-medium-com-mdlayher-network-protocol-breakdown-ethernet-and-go-de985d726cc1-matt-layher-describes-the-ethernet-protocol-and-introduces-a-couple-of-libraries-written-in-go&#34;&gt;In his article, &lt;a href=&#34;https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1&#34;&gt;Network Protocol Breakdown: Ethernet and Go&lt;/a&gt;, Matt Layher describes the Ethernet protocol and introduces a couple of libraries written in Go.&lt;/h2&gt;
+
+&lt;p&gt;I read the article with interest. Application communication, at the Ethernet frame level, a lower level than TCP sockets, was something I&amp;rsquo;d never considered before.&lt;/p&gt;
+
+&lt;p&gt;Of particular interest was the &amp;ldquo;broadcast&amp;rdquo; nature of the communication. In contrast to sockets - though frames can also be addressed to specific devices - frames can be broadcast network-wide, enabling more than one device to listen and use the frame payload.&lt;/p&gt;
+
+&lt;p&gt;I could see some parallels between Ethernet frames and MQTT, a protocol I use frequently in my hardware projects.&lt;/p&gt;
+
+&lt;p&gt;I could also see a few distinct advantages over MQTT. I don&amp;rsquo;t want to go into loads of detail here, but, suffice to say, a cheap, convenient but very insecure approach to using MQTT in what are often just &amp;ldquo;hobby&amp;rdquo; hardware projects, is to bounce traffic off of one of the free remote MQTT brokers. And I have been known to do this ;)&lt;/p&gt;
+
+&lt;h2 id=&#34;so-why-ethernet-frames&#34;&gt;So why Ethernet Frames?&lt;/h2&gt;
+
+&lt;p&gt;Potentially, by using Ethernet frames there would be no requirement for the MQTT broker so that&amp;rsquo;s one less piece of hardware to configure and manage (if you host your own); messages would stay within the local area network, behind the router firewall, so we&amp;rsquo;re secure by default and; we might achieve higher-speed transmissions, since we would not be sending data all the way off to a remote MQTT broker, only to receive it back from that broker on another machine sitting within the same local area network.&lt;/p&gt;
+
+&lt;p&gt;So I set about writing a package on top of Matt&amp;rsquo;s &lt;a href=&#34;https://github.com/mdlayher/ethernet&#34;&gt;Ethernet&lt;/a&gt; and &lt;a href=&#34;https://github.com/mdlayher/raw&#34;&gt;Raw&lt;/a&gt; packages with two objectives in mind:-&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use Ethernet frame messaging to emulate MQTT specifically by providing pub/sub functionality, and;&lt;/li&gt;
+&lt;li&gt;Provide an API which would feel familiar to MQTT users and therefore be a relatively simple drop in replacement for a typical MQTT client library.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;methodology&#34;&gt;Methodology&lt;/h2&gt;
+
+&lt;p&gt;The package itself is fairly straightforward - most of the sophisticated stuff is performed by the two packages of Matt&amp;rsquo;s which it imports, but it satisfies both of the objectives mentioned above.&lt;/p&gt;
+
+&lt;p&gt;I took the liberty of naming the package EFMQ (for Ethernet Frames Message Queue), and you can find it &lt;a href=&#34;http://github.com/olliephillips/efmq&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;objective-1-provide-pub-sub-functionality&#34;&gt;Objective 1 - Provide Pub/Sub functionality&lt;/h3&gt;
+
+&lt;p&gt;Pub/Sub is emulated by devices maintaining a list of their own subscriptions and comparing each received message&amp;rsquo;s topic to this list. If topic matches a subscription, the message is put on an unbuffered channel for subsequent processing. Any messages that do not match a subscription are simply discarded.&lt;/p&gt;
+
+&lt;h3 id=&#34;objective-2-provide-an-api-similar-to-mqtt&#34;&gt;Objective 2 - Provide an API similar to MQTT&lt;/h3&gt;
+
+&lt;p&gt;This is best illustrated by a couple of examples.&lt;/p&gt;
+
+&lt;h4 id=&#34;publisher&#34;&gt;Publisher&lt;/h4&gt;
+
+&lt;p&gt;In this contrived example, we&amp;rsquo;re publishing temperature data on the &lt;code&gt;temp&lt;/code&gt; topic every second. &lt;code&gt;wlan0&lt;/code&gt; represents the network interface used by the device, in this case a Raspberry Pi Zero W.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mq, err := efmq.NewEFMQ(&amp;quot;wlan0&amp;quot;) 
+if err != nil {
+  log.Fatal(err)
+}
+t := time.NewTicker(1 * time.Second)
+for range t.C {
+  if err := mq.Publish(&amp;quot;temp&amp;quot;, &amp;quot;20.5&amp;quot;); err != nil {
+ 	log.Fatalln(err)
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;subscriber&#34;&gt;Subscriber&lt;/h4&gt;
+
+&lt;p&gt;In this example another device in the same network subscribes to the &lt;code&gt;temp&lt;/code&gt; topic and then listens indefinitely. Any messages which match the subscription are made available on the &lt;code&gt;mq.Message&lt;/code&gt; channel.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mq, err := efmq.NewEFMQ(&amp;quot;wlan0&amp;quot;)
+if err != nil {
+  log.Fatal(err)
+}
+mq.Subscribe(&amp;quot;fermenter&amp;quot;)
+mq.Listen()
+for msg := range mq.Message {
+  fmt.Println(&amp;quot;topic:&amp;quot;, msg.Topic)
+  fmt.Println(&amp;quot;message:&amp;quot;, msg.Payload)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;performance&#34;&gt;Performance&lt;/h3&gt;
+
+&lt;p&gt;We&amp;rsquo;re off to a good start by removing the latency transmitting messages via a remote server, and the messaging is direct between two devices, no third device (a local MQTT broker) is needed to relay messages, but as yet I don&amp;rsquo;t have any benchmarks.&lt;/p&gt;
+
+&lt;p&gt;In testing, I&amp;rsquo;ve been running a dummy setup using two Raspberry Pi Zero W devices which have been communicating using EFMQ at an interval of 50ms for over a week with no issues. 50ms means 20 messages per second - more than sufficient for most monitoring and control applications that I&amp;rsquo;m likely to want to build!&lt;/p&gt;
+
+&lt;p&gt;If you give EFMQ a try please let me know how it works for you!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

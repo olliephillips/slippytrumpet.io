@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>slippytrumpet.io</title>
+    <link>https://slippytrumpet.io/tags/letsencrypt/index.xml</link>
+    <description>Recent content on slippytrumpet.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="https://slippytrumpet.io/tags/letsencrypt/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Let&#39;s Encrypt and Go</title>
+      <link>https://slippytrumpet.io/posts/letsencrypt-and-go/</link>
+      <pubDate>Mon, 31 Oct 2016 18:43:50 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/letsencrypt-and-go/</guid>
+      <description>
+
+&lt;h2 id=&#34;recently-i-implemented-tls-using-let-s-encrypt-for-two-go-applications-i-thought-i-d-outline-the-process-i-followed-and-mention-a-couple-of-issues-i-had&#34;&gt;Recently I implemented TLS using Let&amp;rsquo;s Encrypt for two Go applications. I thought I&amp;rsquo;d outline the process I followed and mention a couple of issues I had.&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://letsencrypt.org/&#34;&gt;Let&amp;rsquo;s Encrypt&lt;/a&gt; is a fabulous service. In making TLS freely accessible to the masses it&amp;rsquo;s helping make the Internet a more secure place.&lt;/p&gt;
+
+&lt;p&gt;For Go applications, there&amp;rsquo;s no automatic install and renewal route, the process you follow to obtain a certificate takes you via the &amp;ldquo;&lt;a href=&#34;http://letsencrypt.readthedocs.io/en/latest/using.html#standalone&#34;&gt;standalone&lt;/a&gt;&amp;rdquo; option.&lt;/p&gt;
+
+&lt;p&gt;Alternatively, you can use a helper package such as &lt;a href=&#34;https://github.com/dkumor/acmewrapper&#34;&gt;ACMEWrapper&lt;/a&gt; in your application; add a bit of code and ACMEWrapper automatically handles certificate creation and more importantly renewal, since Let&amp;rsquo;s Encrypt certificates expire every 90 days.&lt;/p&gt;
+
+&lt;p&gt;I didn&amp;rsquo;t use ACMEWrapper. In fact I only learned of this package after my TLS deployments were done. But even without one of these helper packages, the process of certificate creation and renewal via the &amp;ldquo;standalone&amp;rdquo; route is straightforwards:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Install the Let&amp;rsquo;s Encrypt client &amp;ldquo;Certbot&amp;rdquo; on your server;&lt;/li&gt;
+&lt;li&gt;Run a single command to generate the certificates for the required domain;&lt;/li&gt;
+&lt;li&gt;Either copy, or symlink, the required key and certificate files to your application.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;unbind-all-your-things&#34;&gt;Unbind all your things&lt;/h2&gt;
+
+&lt;p&gt;To create a certificate for a domain, Let&amp;rsquo;s Encrypt needs to validate you control the domain.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re generating the certificates on the server on you which you want to use them, this requires that port 80 and/or 443 are available to Certbot. This means you&amp;rsquo;ll have to unbind anything running on those ports, which typically means you&amp;rsquo;ll have to stop your application(s) for the duration of the certificate creation process.&lt;/p&gt;
+
+&lt;p&gt;Certbot makes you aware if it can&amp;rsquo;t use the ports it needs, so this is a minor obstacle and quickly overcome. I only mention it in case your application already has users - you&amp;rsquo;ll want to consider when best to run Certbot.&lt;/p&gt;
+
+&lt;p&gt;No big deal but my first issue - my application was already live, and had to go offline for about 20 seconds to free those ports for Certbot.&lt;/p&gt;
+
+&lt;h2 id=&#34;i-think-your-ssl-has-expired&#34;&gt;I think your SSL has expired?&lt;/h2&gt;
+
+&lt;p&gt;Certbot &amp;ldquo;standalone&amp;rdquo; creates four files after successfully completing.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cert.pem
+chain.pem
+fullchain.pem
+privkey.pem
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;
+Your go application needs two - but which two?&lt;/p&gt;
+
+&lt;p&gt;You need a private key, so &lt;code&gt;privkey.pem&lt;/code&gt; is an obvious pick. You also need the certificate itself, so &lt;code&gt;cert.pem&lt;/code&gt; is a reasonable choice too.&lt;/p&gt;
+
+&lt;p&gt;But you need to use the less obviously named &lt;code&gt;fullchain.pem&lt;/code&gt; for the certificate in your Go application. This file combines server, root and intermediate certificates into one.&lt;/p&gt;
+
+&lt;p&gt;Choose the more obvious &lt;code&gt;cert.pem&lt;/code&gt; (as I did) and though the certificate may look good to you and many others, you&amp;rsquo;ll get reports from people using some browsers saying your SSL has expired or your TLS is broken, and they can&amp;rsquo;t or won&amp;rsquo;t use your site.&lt;/p&gt;
+
+&lt;p&gt;Hard to debug.&lt;/p&gt;
+
+&lt;p&gt;So why &lt;code&gt;fullchain.pem&lt;/code&gt;? Though my knowledge is limited, broadly it seems to relate to the fact that Let&amp;rsquo;s Encrypt certificates are currently cross signed by Identrust to ensure browser acceptance. Let&amp;rsquo;s Encrypt is not as yet a root authority so needs this, especially to appear trusted in older browsers.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

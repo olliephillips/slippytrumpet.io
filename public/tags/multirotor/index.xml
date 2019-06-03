@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>slippytrumpet.io</title>
+    <link>https://slippytrumpet.io/tags/multirotor/index.xml</link>
+    <description>Recent content on slippytrumpet.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="https://slippytrumpet.io/tags/multirotor/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>3D Printing a Racing Drone</title>
+      <link>https://slippytrumpet.io/posts/3d-printed-drone-build/</link>
+      <pubDate>Thu, 30 Nov 2017 21:34:28 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/3d-printed-drone-build/</guid>
+      <description>
+
+&lt;h2 id=&#34;we-wanted-to-build-a-racing-drone-on-a-3d-printed-frame&#34;&gt;We wanted to build a racing drone on a 3D printed frame&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://slippytrumpet.io/images/drone.jpg&#34; alt=&#34;alt text&#34; title=&#34;Completed build&#34; /&gt;
+Pictured: Completed build&lt;/p&gt;
+
+&lt;p&gt;And I wanted to document it here - the build; the programming bit; the learning to fly bit..&lt;/p&gt;
+
+&lt;p&gt;But then we got into it. And I soon realised 3D printing the chassis/frame was actually going to be the easy bit.&lt;/p&gt;
+
+&lt;p&gt;Drones builds are a massive topic - when you&amp;rsquo;re starting out. Involved, time consuming, but hugely rewarding, is the best way I can sum it up.&lt;/p&gt;
+
+&lt;p&gt;To document the build process and programming process would be a massive undertaking, and there&amp;rsquo;s plenty of info on the Internet already.&lt;/p&gt;
+
+&lt;p&gt;So, all we have in this post is a single video and a couple of images. The video shows off our completed drone in flight!&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;//www.youtube.com/embed/KYvZi5S-MPE&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%;&#34; allowfullscreen frameborder=&#34;0&#34;&gt;&lt;/iframe&gt;
+ &lt;/div&gt;
+
+&lt;br/&gt;
+This image is the &lt;a href=&#34;https://www.thingiverse.com/thing:629338&#34;&gt;Peon 230 frame&lt;/a&gt; we printed for the frame. You can get it on Thingiverse.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://thingiverse-production-new.s3.amazonaws.com/renders/37/d1/c6/95/aa/IMG_0151_preview_featured.JPG&#34; alt=&#34;alt text&#34; title=&#34;Peon 230 - Quadcopter&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;3D printing the frame has one major benefit - you break a part you can just print another. Even with fairly high infills we&amp;rsquo;ve broken every piece but three of the arms while learning to fly it - the worst damage when I hit a tree - and whilst it takes a bit of time to reprint the parts, it&amp;rsquo;s better than buying new frames!&lt;/p&gt;
+
+&lt;h2 id=&#34;what-you-need&#34;&gt;What you need&lt;/h2&gt;
+
+&lt;p&gt;Most of the parts we sourced via Ebay, and in most cases the prices of items direct from Asia were too attractive to ignore. However, one downside is that lead times for delivery are quite lengthy. In some cases our build was held up by 3 weeks waiting for a particular part.&lt;/p&gt;
+
+&lt;p&gt;You&amp;rsquo;ll find some variations on this parts list as some components can be sourced that perform more than one role, but this is what we used.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Overlander 3S 1600mAh &lt;sup&gt;35&lt;/sup&gt;&amp;frasl;&lt;sub&gt;65&lt;/sub&gt; battery - under £15.00&lt;/li&gt;
+&lt;li&gt;Radient Reflex 2-3S Charger - under £15.00&lt;/li&gt;
+&lt;li&gt;4 BlHeli-S Speed controllers (ESC) - £9.00 each&lt;/li&gt;
+&lt;li&gt;4 Emax 2206 1900 kv motord - under £7.00 each&lt;/li&gt;
+&lt;li&gt;Matex PDB-XT60 Power Distribution Board - £3.19&lt;/li&gt;
+&lt;li&gt;Naze32 Acro Revision 6 Flight Controller - £8.55&lt;/li&gt;
+&lt;li&gt;LED lights (4 strips) - £2.39&lt;/li&gt;
+&lt;li&gt;10 pack of 40 mm blue annodised standoffs - £3.71&lt;/li&gt;
+&lt;li&gt;Tarot TL150F3 S.BUS 8 Channel Receiver - £6.39&lt;/li&gt;
+&lt;li&gt;Bulk pack Screws/Nuts -  under £3.00&lt;/li&gt;
+&lt;li&gt;5 pack Eachine Battery Tie Down Straps - £2.35&lt;/li&gt;
+&lt;li&gt;Heat Shrink (various) - under £4.00&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;This post isn&amp;rsquo;t the detailed one I&amp;rsquo;d planned, I simply don&amp;rsquo;t have the time to do the subject proper justice. But feel free ask me stuff - if I can help I will.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

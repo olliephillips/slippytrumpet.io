@@ -1,0 +1,336 @@
+    <!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Ollie Phillips">
+		<meta name="description" content="Experimenting with the new Web Bluetooth API and Puck.js.">
+		<meta name="generator" content="Hugo 0.18-DEV" />
+		<title>A little bit of Web Bluetooth &middot; slippytrumpet.io</title>
+		<link rel="shortcut icon" href="https://slippytrumpet.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/style.css">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://slippytrumpet.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='https://slippytrumpet.io/about'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>A little bit of Web Bluetooth</h1>
+                    <h2 class="headline">
+                    February 9, 2017 
+                    <br><br>
+                    Posted in: 
+                    
+                        
+                            <a href="https://slippytrumpet.io/categories/iot">IoT</a>
+                        
+                            <a href="https://slippytrumpet.io/categories/web-development">Web Development</a>
+                        
+                    
+                      
+                    <br>
+                    Tagged: 
+                    
+                        
+                            <a href="https://slippytrumpet.io/tags/espruino">espruino</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/webbluetooth">webbluetooth</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/mqtt">mqtt</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/websockets">websockets</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/puckjs">puckjs</a>
+                        
+                    
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<h2 id="communicating-using-the-bluetooth-protocol-has-traditionally-been-the-sole-preserve-of-native-applications-now-you-can-do-it-from-a-web-page">Communicating using the Bluetooth protocol has traditionally been the sole preserve of native applications. Now you can do it from a web page!</h2>
+
+<p>This is the first of two short posts on my experiments with <a href="http://www.espruino.com/Puck.js">Puck.js</a> and <a href="https://developers.google.com/web/updates/2015/07/interact-with-ble-devices-on-the-web#before_we_start">Web Bluetooth</a>. This one looks at security; the second will look at a <a href="https://olliephillips.github.io/webbleMQ/">Web Bluetooth to MQTT gateway</a> experiment.</p>
+
+<h3 id="what-s-web-bluetooth">What&rsquo;s Web Bluetooth?</h3>
+
+<p>Some may know, that from Google Chrome v56, the Web Bluetooth API went from being an experimental &ldquo;opt-in&rdquo; feature to enabled by default. It supports communication between devices that implement Bluetooth 4.0 (and above) and uses Bluetooth Low Energy (BLE), a more power efficient protocol.</p>
+
+<p>As stated in the introduction earlier, once the preserve of native applications, now Web Developers can build applications which talk to physical hardware over BLE from websites - applications which match the capabilities of native apps.</p>
+
+<p>This is exciting.</p>
+
+<h3 id="is-it-secure">Is it secure?</h3>
+
+<p>Since the Chrome 56 release, some <a href="https://www.theregister.co.uk/2017/02/05/chrome_56_quietly_added_bluetooth_snitch_api/">reports have cited security and privacy concerns</a>, and many people are clamouring to turn the feature off.</p>
+
+<p>But should they be concerned? In my view, no.</p>
+
+<p>It&rsquo;s easy to surmise that unscrupulous website owners might try and take advantage of this; that device detection could be used as a mechanism for tracking - just like cookies - but the mechanics of the Web Bluetooth API seem to have security firmly in mind. It looks like it would be hard to abuse from an application, both intentionally and inadvertently.</p>
+
+<p>First, it&rsquo;s HTTPS only. You can&rsquo;t use Web Bluetooth unless your website is served securely.</p>
+
+<p>Second, to initiate a device scan, it has to be in response to a user action such as a mouse click or finger swipe. You can&rsquo;t trigger it directly from code - and you can&rsquo;t emulate these events programmatically to fool the Web Bluetooth API.</p>
+
+<p>However, one might argue that website visitors could be fooled.</p>
+
+<p>For example, what if you attach an <code>onClick</code> event listener to the <code>&lt;body&gt;</code> element of the DOM? Would a mouse click anywhere on the page initiate a device scan?</p>
+
+<p>It would.</p>
+
+<p>But hold your horses, so you can do this, is there any real risk? I&rsquo;d say &lsquo;no&rsquo; again.</p>
+
+<p>To understand why, we need to look at what happens next. We need to look at how a device scan works; how does it notify the user  of devices in range which it can connect to, and; more importantly, at what stage does the browser have access to any information about these devices (specifically, we&rsquo;re concerned about information exposed by the Web Bluetooth API object - about scanned devices - which could be stored, used for connection attempts, reading <a href="https://www.bluetooth.com/specifications/gatt/characteristics">service characteristics</a>, or just just &lsquo;plain evil&rsquo; tracking?</p>
+
+<p>Let&rsquo;s see.</p>
+
+<p>This code initiates a Web Bluetooth device scan. You have to set it up as callback to an event listener like <code>click</code>, but once the event triggers, a &lsquo;device chooser&rsquo; pop-up will appear near the address bar of the Chrome Browser listing devices in range.</p>
+
+<pre><code>navigator.bluetooth.requestDevice({
+	acceptAllDevices: true
+}).then(device =&gt; { 
+	console.log(device)
+}).catch(error =&gt; { console.log(error);});
+</code></pre>
+
+<p><br/></p>
+
+<p>The above will list all BLE devices in range, but in your application, you can define filters so that only the types of device your app can interact with, will appear. For example, use a name prefix if devices have a common name, or you can filter on <a href="https://www.bluetooth.com/specifications/gatt/services">GATT service</a> (GATT represents &ldquo;Generic Attribute Profile&rdquo;, and broadly put, GATT services describe what a device is able to do).</p>
+
+<p>Following the scan, the user is able to pick the device they want the web page to connect to, but until they do, our script can&rsquo;t process code to connect, and our script/web page knows NOTHING about the devices in the device chooser, the devices in range.</p>
+
+<p>Also that &lsquo;device chooser&rsquo;.. it&rsquo;s a part of the Chrome browser application, and nothing to do with the webpage and its DOM. So you can&rsquo;t interact with it from code.</p>
+
+<p>From here the user can choose a device, or cancel. I&rsquo;ve noticed ignoring the device chooser and doing something else like opening the Developer Console will trigger &lsquo;cancel&rsquo; too - I don&rsquo;t know what other actions will do this.</p>
+
+<p>In the above code &lsquo;cancelling&rsquo;, however activated, will cause an error to be logged to console.</p>
+
+<p>If the user chooses to connect to a device, then a <code>BluetoothDevice</code> object is passed to the script which, for my Puck device, contains the following information.</p>
+
+<pre><code>BluetoothDevice {
+	id: &quot;0L3/Rdv+ZzblpiXmJPlO3A==&quot;, 
+	name: &quot;Puck.js bb18&quot;, 
+	gatt: BluetoothRemoteGATTServer, 
+	ongattserverdisconnected: null
+}
+</code></pre>
+
+<p><br/>
+But, remember, I allowed the web application to see this, by allowing my browser to connect to it.</p>
+
+<p>This device scan &amp; connection process must be followed every time the user wants to connect a device - as far as I can tell there is no memorizing, nor any pairing.</p>
+
+<p>So this looks fairly secure to me. Hard for web developers to abuse.</p>
+
+<p>Can networks of websites leverage Web Bluetooth? Like they might do cookies?</p>
+
+<p>I don&rsquo;t know, but in my testing, the <code>BluetoothDevice.id</code> is not a constant. It seems to be random and rotates on connection. So, if trying to track JUST allowed/connected devices, you could not rely on <code>id</code> website to website. <code>BluetoothDevice.name</code> can be constant though.</p>
+
+<p>Can Google see any data&hellip;? What if you compromise Chrome&hellip;? Is the API secure&hellip;? We&rsquo;ll all know in time.</p>
+
+<p>But, the last point I want to make on Web Bluetooth, is that where Web Bluetooth offers no data on, nor any programmatic access to, devices in range.. a native app, written in Node, Go, C or similar, running on hardware as accessible and cheap as a Raspberry Pi 3, will give you a lot of info - without asking for any permission whatsoever!</p>
+
+<p>So, if you&rsquo;re going to be tracked unknowingly via your Bluetooth devices, it&rsquo;s less likely to be via a website, than from a cheap home built Bluetooth scanner, running out of someone&rsquo;s living room.</p>
+
+<h3 id="so-that-said-what-can-you-do-with-web-bluetooth">So, that said, what can you do with Web Bluetooth?</h3>
+
+<p>Since security is the general theme of this post, I&rsquo;ve built a totally impractical 2 factor authentication demo which uses Puck.js as a hardware fob to authenticate the user, a bit like how the banks do with online account access.</p>
+
+<p>It&rsquo;s impractical since it&rsquo;s all client side, so not secure, but some server calls could remedy this. But you&rsquo;d still need a Puck to use it!</p>
+
+<p>You can see the <a href="https://olliephillips.github.io/areyoupucker/">interface here</a>. The website sends a random four colour sequence to the Puck (which has three onboard LEDs - Red, Green and Blue).</p>
+
+<p>The sequence, once replicated on the web form interface, unlocks the form so that it can be submitted.</p>
+
+<p>Video below shows how it works.</p>
+
+<p><blockquote class="instagram-media" data-instgrm-captioned data-instgrm-version="7" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:658px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:8px;"> <div style=" background:#F8F8F8; line-height:0; margin-top:40px; padding:50.0% 0; text-align:center; width:100%;"> <div style=" background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAMUExURczMzPf399fX1+bm5mzY9AMAAADiSURBVDjLvZXbEsMgCES5/P8/t9FuRVCRmU73JWlzosgSIIZURCjo/ad+EQJJB4Hv8BFt+IDpQoCx1wjOSBFhh2XssxEIYn3ulI/6MNReE07UIWJEv8UEOWDS88LY97kqyTliJKKtuYBbruAyVh5wOHiXmpi5we58Ek028czwyuQdLKPG1Bkb4NnM+VeAnfHqn1k4+GPT6uGQcvu2h2OVuIf/gWUFyy8OWEpdyZSa3aVCqpVoVvzZZ2VTnn2wU8qzVjDDetO90GSy9mVLqtgYSy231MxrY6I2gGqjrTY0L8fxCxfCBbhWrsYYAAAAAElFTkSuQmCC); display:block; height:44px; margin:0 auto -44px; position:relative; top:-22px; width:44px;"></div></div> <p style=" margin:8px 0 0 0; padding:0 4px;"> <a href="https://www.instagram.com/p/BQTLhASA27a/" style=" color:#000; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none; word-wrap:break-word;" target="_blank">Are you pucker?</a></p> <p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;">A video posted by Ollie (@slippytrumpet) on <time style=" font-family:Arial,sans-serif; font-size:14px; line-height:17px;" datetime="2017-02-09T17:44:45+00:00">Feb 9, 2017 at 9:44am PST</time></p></div></blockquote>
+<script async defer src="//platform.instagram.com/en_US/embeds.js"></script></p>
+
+<p>I&rsquo;ve also written a <a href="https://olliephillips.github.io/webbleMQ/">Web Bluetooth MQTT gateway</a> which facilitates master/slave communication between Pucks, console control of multiple Pucks at the same time, as well as communication of data over MQTT.</p>
+
+<p>I will cover this in another post.</p>
+
+                </section>
+               </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/slippytrumpet">
+                        <img class="avatar" src="https://slippytrumpet.io/images/avatar.png">
+                        <div>
+                            <span class="dark">Ollie Phillips</span>
+                            <span></span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fslippytrumpet.io%2fposts%2fa-little-bit-of-web-bluetooth%2f - A%20little%20bit%20of%20Web%20Bluetooth by @slippytrumpet"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'slippytrumpet';
+    var disqus_identifier = 'https:\/\/slippytrumpet.io\/posts\/a-little-bit-of-web-bluetooth\/';
+    var disqus_title = 'A little bit of Web Bluetooth';
+    var disqus_url = 'https:\/\/slippytrumpet.io\/posts\/a-little-bit-of-web-bluetooth\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/sett-a-badgerdb-abstraction/">Sett, a BadgerDB abstraction<aside class="dates">May 4</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/octogon-gcode-file-uploader/">Octogon G-Code File Uploader<aside class="dates">Dec 5</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/3d-printed-drone-build/">3D Printing a Racing Drone<aside class="dates">Nov 30</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/experiments-with-message-queuing-over-ethernet-frames/">Experiments with Messaging over Ethernet Frames<aside class="dates">Jul 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/running-your-app-as-service-on-pi-zero-w/">Running your Application as a Service on Pi Zero W<aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/3d-printing-learnings-shared/">3D Printing. Learnings shared<aside class="dates">May 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/webbluetooth-to-mqtt-gateway/">Web Bluetooth to MQTT Gateway with Puck.js<aside class="dates">Apr 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/raspberry-pi-zero-w-setup/">Raspberry Pi Zero W &#34;headless&#34; Setup<aside class="dates">Mar 17</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/a-little-bit-of-web-bluetooth/">A little bit of Web Bluetooth<aside class="dates">Feb 9</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/building-an-rc-car-with-espruino-on-esp8266/">Building a Remote Control Car with Espruino on ESP8266<aside class="dates">Nov 16</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.github.com/olliephillips">
+        github
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2018 Ollie Phillips
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://slippytrumpet.io/js/main.js"></script>
+<script src="https://slippytrumpet.io/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-83287802-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+    </body>
+</html>

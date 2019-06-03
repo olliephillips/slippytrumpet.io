@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>slippytrumpet.io</title>
+    <link>https://slippytrumpet.io/tags/iot/index.xml</link>
+    <description>Recent content on slippytrumpet.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="https://slippytrumpet.io/tags/iot/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Experiments with Messaging over Ethernet Frames</title>
+      <link>https://slippytrumpet.io/posts/experiments-with-message-queuing-over-ethernet-frames/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/experiments-with-message-queuing-over-ethernet-frames/</guid>
+      <description>
+
+&lt;h2 id=&#34;in-his-article-network-protocol-breakdown-ethernet-and-go-https-medium-com-mdlayher-network-protocol-breakdown-ethernet-and-go-de985d726cc1-matt-layher-describes-the-ethernet-protocol-and-introduces-a-couple-of-libraries-written-in-go&#34;&gt;In his article, &lt;a href=&#34;https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1&#34;&gt;Network Protocol Breakdown: Ethernet and Go&lt;/a&gt;, Matt Layher describes the Ethernet protocol and introduces a couple of libraries written in Go.&lt;/h2&gt;
+
+&lt;p&gt;I read the article with interest. Application communication, at the Ethernet frame level, a lower level than TCP sockets, was something I&amp;rsquo;d never considered before.&lt;/p&gt;
+
+&lt;p&gt;Of particular interest was the &amp;ldquo;broadcast&amp;rdquo; nature of the communication. In contrast to sockets - though frames can also be addressed to specific devices - frames can be broadcast network-wide, enabling more than one device to listen and use the frame payload.&lt;/p&gt;
+
+&lt;p&gt;I could see some parallels between Ethernet frames and MQTT, a protocol I use frequently in my hardware projects.&lt;/p&gt;
+
+&lt;p&gt;I could also see a few distinct advantages over MQTT. I don&amp;rsquo;t want to go into loads of detail here, but, suffice to say, a cheap, convenient but very insecure approach to using MQTT in what are often just &amp;ldquo;hobby&amp;rdquo; hardware projects, is to bounce traffic off of one of the free remote MQTT brokers. And I have been known to do this ;)&lt;/p&gt;
+
+&lt;h2 id=&#34;so-why-ethernet-frames&#34;&gt;So why Ethernet Frames?&lt;/h2&gt;
+
+&lt;p&gt;Potentially, by using Ethernet frames there would be no requirement for the MQTT broker so that&amp;rsquo;s one less piece of hardware to configure and manage (if you host your own); messages would stay within the local area network, behind the router firewall, so we&amp;rsquo;re secure by default and; we might achieve higher-speed transmissions, since we would not be sending data all the way off to a remote MQTT broker, only to receive it back from that broker on another machine sitting within the same local area network.&lt;/p&gt;
+
+&lt;p&gt;So I set about writing a package on top of Matt&amp;rsquo;s &lt;a href=&#34;https://github.com/mdlayher/ethernet&#34;&gt;Ethernet&lt;/a&gt; and &lt;a href=&#34;https://github.com/mdlayher/raw&#34;&gt;Raw&lt;/a&gt; packages with two objectives in mind:-&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use Ethernet frame messaging to emulate MQTT specifically by providing pub/sub functionality, and;&lt;/li&gt;
+&lt;li&gt;Provide an API which would feel familiar to MQTT users and therefore be a relatively simple drop in replacement for a typical MQTT client library.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;methodology&#34;&gt;Methodology&lt;/h2&gt;
+
+&lt;p&gt;The package itself is fairly straightforward - most of the sophisticated stuff is performed by the two packages of Matt&amp;rsquo;s which it imports, but it satisfies both of the objectives mentioned above.&lt;/p&gt;
+
+&lt;p&gt;I took the liberty of naming the package EFMQ (for Ethernet Frames Message Queue), and you can find it &lt;a href=&#34;http://github.com/olliephillips/efmq&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;objective-1-provide-pub-sub-functionality&#34;&gt;Objective 1 - Provide Pub/Sub functionality&lt;/h3&gt;
+
+&lt;p&gt;Pub/Sub is emulated by devices maintaining a list of their own subscriptions and comparing each received message&amp;rsquo;s topic to this list. If topic matches a subscription, the message is put on an unbuffered channel for subsequent processing. Any messages that do not match a subscription are simply discarded.&lt;/p&gt;
+
+&lt;h3 id=&#34;objective-2-provide-an-api-similar-to-mqtt&#34;&gt;Objective 2 - Provide an API similar to MQTT&lt;/h3&gt;
+
+&lt;p&gt;This is best illustrated by a couple of examples.&lt;/p&gt;
+
+&lt;h4 id=&#34;publisher&#34;&gt;Publisher&lt;/h4&gt;
+
+&lt;p&gt;In this contrived example, we&amp;rsquo;re publishing temperature data on the &lt;code&gt;temp&lt;/code&gt; topic every second. &lt;code&gt;wlan0&lt;/code&gt; represents the network interface used by the device, in this case a Raspberry Pi Zero W.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mq, err := efmq.NewEFMQ(&amp;quot;wlan0&amp;quot;) 
+if err != nil {
+  log.Fatal(err)
+}
+t := time.NewTicker(1 * time.Second)
+for range t.C {
+  if err := mq.Publish(&amp;quot;temp&amp;quot;, &amp;quot;20.5&amp;quot;); err != nil {
+ 	log.Fatalln(err)
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;subscriber&#34;&gt;Subscriber&lt;/h4&gt;
+
+&lt;p&gt;In this example another device in the same network subscribes to the &lt;code&gt;temp&lt;/code&gt; topic and then listens indefinitely. Any messages which match the subscription are made available on the &lt;code&gt;mq.Message&lt;/code&gt; channel.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mq, err := efmq.NewEFMQ(&amp;quot;wlan0&amp;quot;)
+if err != nil {
+  log.Fatal(err)
+}
+mq.Subscribe(&amp;quot;fermenter&amp;quot;)
+mq.Listen()
+for msg := range mq.Message {
+  fmt.Println(&amp;quot;topic:&amp;quot;, msg.Topic)
+  fmt.Println(&amp;quot;message:&amp;quot;, msg.Payload)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;performance&#34;&gt;Performance&lt;/h3&gt;
+
+&lt;p&gt;We&amp;rsquo;re off to a good start by removing the latency transmitting messages via a remote server, and the messaging is direct between two devices, no third device (a local MQTT broker) is needed to relay messages, but as yet I don&amp;rsquo;t have any benchmarks.&lt;/p&gt;
+
+&lt;p&gt;In testing, I&amp;rsquo;ve been running a dummy setup using two Raspberry Pi Zero W devices which have been communicating using EFMQ at an interval of 50ms for over a week with no issues. 50ms means 20 messages per second - more than sufficient for most monitoring and control applications that I&amp;rsquo;m likely to want to build!&lt;/p&gt;
+
+&lt;p&gt;If you give EFMQ a try please let me know how it works for you!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Web Bluetooth to MQTT Gateway with Puck.js</title>
+      <link>https://slippytrumpet.io/posts/webbluetooth-to-mqtt-gateway/</link>
+      <pubDate>Fri, 07 Apr 2017 12:36:46 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/webbluetooth-to-mqtt-gateway/</guid>
+      <description>
+
+&lt;h2 id=&#34;if-you-read-a-little-bit-of-web-bluetooth-https-slippytrumpet-io-posts-a-little-bit-of-web-bluetooth-you-ll-know-a-bit-about-puck-js-and-the-new-web-bluetooth-api-already-but-what-aside-from-building-a-gimmicky-two-factor-authentication-system-can-you-do-with-it&#34;&gt;If you read &lt;a href=&#34;https://slippytrumpet.io/posts/a-little-bit-of-web-bluetooth/&#34;&gt;A little bit of Web Bluetooth&lt;/a&gt; you&amp;rsquo;ll know a bit about Puck.js and the new Web Bluetooth API already. But what, aside from building a gimmicky two factor authentication system, can you do with it?&lt;/h2&gt;
+
+&lt;p&gt;I had some ideas.&lt;/p&gt;
+
+&lt;p&gt;What about an interface through which you can program multiple Pucks at the same time? The Web IDE allows you to connect and program one Puck at a time. What if I want a few doing the same thing, it would be nice to set them up in one go? We&amp;rsquo;ll call this a Console.&lt;/p&gt;
+
+&lt;p&gt;What about a Relay - whereby one Puck controls others in a master/slave configuration? Now you can do this directly between Pucks, but we could use Web Bluetooth to make a Relay.&lt;/p&gt;
+
+&lt;p&gt;What about individual Pucks, communicating via Web Bluetooth, with each other over the Internet using MQTT, or just controlled from a remote location with MQTT? A Gateway?&lt;/p&gt;
+
+&lt;p&gt;Three interesting ideas: a Console, a Relay and a Gateway.&lt;/p&gt;
+
+&lt;p&gt;So here is &lt;a href=&#34;https://olliephillips.github.io/webbleMQ/&#34;&gt;WebbleMQ&lt;/a&gt;, which is all of these things. It&amp;rsquo;s a HTML5 &amp;amp; Javascript application which allows you connect multiple Pucks.&lt;/p&gt;
+
+&lt;p&gt;Each Puck is tracked on a connection ID, and depending on the mode that is set, it lets you interact with the connected Pucks in different ways.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://slippytrumpet.io/images/webblemq.png&#34; alt=&#34;alt text&#34; title=&#34;The WebbleMQ Interface&#34; /&gt;
+Pictured. The WebbleMQ interface&lt;/p&gt;
+
+&lt;p&gt;Though I wrote it specifically for Puck.js, the Web Bluetooth API connection filter is quite broad. It looks for devices which, like the Puck, support the NORDIC UART bluetooth service. So it could well work for other devices which support this service. I haven&amp;rsquo;t tested.&lt;/p&gt;
+
+&lt;p&gt;The source code for the application, as well as being readable in the web page, &lt;a href=&#34;https://github.com/olliephillips/webbleMQ&#34;&gt;can also be found on Github here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;relay-mode&#34;&gt;Relay mode&lt;/h3&gt;
+
+&lt;p&gt;One device, operating as Master, can control several devices which are configured as Slaves.&lt;/p&gt;
+
+&lt;p&gt;For example, it&amp;rsquo;s simple to turn the Pucks&amp;rsquo; onboard LEDs on and off with a program running on master device such as this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var prog1 = &amp;quot;LED1.set();LED2.set();LED3.set();\n&amp;quot;;
+var prog2 = &amp;quot;LED1.reset();LED2.reset();LED3.reset();\n&amp;quot;;
+var on = false;
+setInterval(function(){
+  var prog = prog2;
+  if(!on){prog = prog1;}
+  Bluetooth.write(prog);
+  on = !on;
+}, 5000);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;console-mode&#34;&gt;Console mode&lt;/h3&gt;
+
+&lt;p&gt;In Console mode, all devices listen to input from the console. We can programatically control several devices at once, we just key our commands to the console window and the code is passed to, and executed on, all connected Pucks.&lt;/p&gt;
+
+&lt;h3 id=&#34;mqtt-modes-the-fun-stuff&#34;&gt;MQTT modes. The fun stuff&lt;/h3&gt;
+
+&lt;p&gt;We&amp;rsquo;ve two modes available here, &amp;ldquo;Announced&amp;rdquo; and &amp;ldquo;Unannounced&amp;rdquo;. I&amp;rsquo;ll explain the difference, but to be clear, neither mode is secure.&lt;/p&gt;
+
+&lt;p&gt;The MQTT broker used by default is the public &lt;code&gt;iot.eclipse.org&lt;/code&gt; broker and though the topic ids used for publishing on are quite obscure in their format, e.g. &lt;code&gt;/wmq/pub/t7fldnrthv205btnafjzg&lt;/code&gt;, this is not secure. If someone knows or guesses the topic id, they can listen and send on the same topic too. Don&amp;rsquo;t send your bank details :)&lt;/p&gt;
+
+&lt;p&gt;That said, if you need security, you could fork the application and change the MQTT broker to one which provides authentication. I didn&amp;rsquo;t need.&lt;/p&gt;
+
+&lt;h3 id=&#34;mqtt-unannounced&#34;&gt;MQTT &amp;ldquo;unannounced&amp;rdquo;&lt;/h3&gt;
+
+&lt;p&gt;In this mode each device has its own publish topic and subscribe topic. If you connect multiple Pucks, then Pucks can subscribe to another Puck&amp;rsquo;s publish topic, so they&amp;rsquo;d in effect be listening to it.&lt;/p&gt;
+
+&lt;h3 id=&#34;mqtt-announced&#34;&gt;MQTT &amp;ldquo;announced&amp;rdquo;&lt;/h3&gt;
+
+&lt;p&gt;Same as above, but device advertises its presence, both the topic it is publishing on and subscribed to, every 10 seconds on a third topic: &lt;code&gt;/wmq/playing&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This topic is used by all connected devices in MQTT announced mode. So, in announced mode someone could check this topic and find pucks they could control, those users happy to allow their Puck to be controlled remotely over MQTT.&lt;/p&gt;
+
+&lt;h2 id=&#34;that-s-it&#34;&gt;That&amp;rsquo;s it&lt;/h2&gt;
+
+&lt;p&gt;The appilication is not without a few glitches, it was a weekends work, and primarilly a proof of concept to help me get familiar with Web Bluetooth.&lt;/p&gt;
+
+&lt;p&gt;It could be improved. For example a free text box rather than select for MQTT topic would allow subscriptions to Pucks found publishing in &lt;code&gt;wmq/playing&lt;/code&gt;. Better yet a check of the &lt;code&gt;wmq/playing&lt;/code&gt; topic which adds all available devices to the publish and subscribe select box options. Feel free to fork it and send pull requests.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s not especially practical either. You have to have a computer running a Chrome Browser in order to let your Pucks communicate over MQTT. A proper gateway would be a server application on a Raspeberry Pi for example.&lt;/p&gt;
+
+&lt;p&gt;But it is, hopefully, a bit of fun, which other Puck owners might want to experiment with, and which shows off the potential of Web Bluetooth a little more.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
