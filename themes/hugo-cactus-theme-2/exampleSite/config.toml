@@ -1,19 +1,19 @@
 # Site settings
-baseurl = "https://slippytrumpet.io/"
-languageCode = "en"
-title = "slippytrumpet.io"
-theme = "hugo-cactus-theme-2"
+baseurl = "https://example.org/"
+languageCode = "en-us"
+title = "Hugo Cactus Theme"
+theme = "hugo-cactus-theme"
 # Enter your tracking code to enable Google Analytics
-googleAnalytics = "UA-83287802-2"
+googleAnalytics = ""
 # Disable comments by leaving disqusShortname empty
-disqusShortname = "slippytrumpet"
+disqusShortname = "spf13"
 
 [params]
-	name = "Ollie Phillips"
-	description = "A blog on the technologies that have been messing with me."
-	bio = "Average code, baby!"
+	name = "John Doe"
+	description = "Describe your website"
+	bio = "Blogger - Programmer - Gopher"
 	# Enter optionally your twitter account
-	twitter = "slippytrumpet"
+	twitter = "Your Twitter account"
 	enableRSS = true
 
 	# Add custom assets with their paths relative to the static folder
@@ -33,7 +33,7 @@ disqusShortname = "slippytrumpet"
 	readMore = ""
 	copyright = ""
 	# Sharing options and author information in posts
-	aboutAuthor = "Average code baby!"
+	aboutAuthor = "I'm an enthusiastic gopher."
 	tweet = ""
 	share = ""
 	# 404 page
@@ -41,11 +41,13 @@ disqusShortname = "slippytrumpet"
 	subtitle404 = ""
 
 	# Choose a font for the social icons in the footer. Either "mono-social" or "font-awesome"
-	iconFont = "font-awesome"
+	iconFont = "mono-social"
     # The social icons can be styled differently if you use mono as font - circle, rounded, or empty
     socialIconStyle = "circle"
 
 # Add additional social link entries underneath
 [social]
-    github   = "https://www.github.com/olliephillips"
-	
+    twitter  = "https://www.twitter.com/"
+    facebook = "https://www.facebook.com/"
+    github   = "https://www.github.com/"
+    dribble  = "https://www.dribbble.com/"
