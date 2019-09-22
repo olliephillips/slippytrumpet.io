@@ -14,7 +14,7 @@ disqusShortname = "slippytrumpet"
 	bio = "Average code, baby!"
 	# Enter optionally your twitter account
 	twitter = "slippytrumpet"
-	enableRSS = true
+	enableRSS = false
 
 	# Add custom assets with their paths relative to the static folder
 	customCSS = []
