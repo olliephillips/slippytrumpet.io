@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>slippytrumpet.io</title>
+    <link>https://slippytrumpet.io/tags/prusa-original/index.xml</link>
+    <description>Recent content on slippytrumpet.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="https://slippytrumpet.io/tags/prusa-original/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>3D Printing. Learnings shared</title>
+      <link>https://slippytrumpet.io/posts/3d-printing-learnings-shared/</link>
+      <pubDate>Thu, 18 May 2017 19:57:59 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/3d-printing-learnings-shared/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;https://thingiverse-production-new.s3.amazonaws.com/renders/20/4b/b7/7b/2d/290f686d06ad5516adbf22594411ad7e_preview_featured.JPG&#34; alt=&#34;alt text&#34; title=&#34;3D printed Pump mount&#34; /&gt;
+Picture. Pump mount.&lt;/p&gt;
+
+&lt;h2 id=&#34;so&#34;&gt;So&amp;hellip;&lt;/h2&gt;
+
+&lt;h3 id=&#34;i-have-a-prusa-original-mk2-3d-printer-learnings-specific-to-this-machine-though-i-expect-you-could-generalise-much-of-this&#34;&gt;I have a Prusa Original Mk2 3D Printer. Learnings specific to this machine, though I expect you could generalise much of this.&lt;/h3&gt;
+
+&lt;p&gt;1) Prusa Original Mk2 is a great product. Mine was a kit. I built it over 4 evenings, and on the few occasions I&amp;rsquo;ve contacted support, they&amp;rsquo;ve been great.&lt;/p&gt;
+
+&lt;p&gt;2) You can spend thousands on a 3D printer. Don&amp;rsquo;t. Prusa is reasonable cost for its ability. That&amp;rsquo;s borne out by the waiting list I guess.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://thingiverse-production-new.s3.amazonaws.com/renders/0f/ab/be/96/00/f56a6cd1de2b9a1f84e5bf135fca885b_preview_featured.JPG&#34; alt=&#34;alt text&#34; title=&#34;SD Card holder&#34; /&gt;
+&lt;center&gt;Picture. SD card holder&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;3) Filament can kill you. Buy cheap and it&amp;rsquo;s going to smart a bit. Your prints won&amp;rsquo;t stick, or will fail at some point. Your interested children will disappear fast. Turns out, there&amp;rsquo;s no glory in 3D Printer configuration management.&lt;/p&gt;
+
+&lt;p&gt;4) Prusa filament is great. It&amp;rsquo;s not expensive at all, until you factor in the carriage costs. Shame. They packed a very high quality PLA filament (IMO) with each printer/printer kit - you just can&amp;rsquo;t justify buying more, unless you can order in size :(&lt;/p&gt;
+
+&lt;p&gt;5) Cheap filament will dement you. It will drip from the extruder, it will form &amp;ldquo;elephants foot&amp;rdquo; and any successful prints will be brittle. You&amp;rsquo;ll need more infill to get the same model strength. In fact,  I wonder if it&amp;rsquo;s actually cheaper at all when all said and done.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://thingiverse-production-new.s3.amazonaws.com/renders/07/8c/28/de/58/677d358891418b54373085bacf9778b6_preview_featured.JPG&#34; alt=&#34;alt text&#34; title=&#34;Mac Magsafe Protect&#34; /&gt;
+&lt;center&gt;Picture. Magsafe cable protection&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;6) Heated beds are great. I get extra adhesion. But often not enough. More than a few times I&amp;rsquo;ve used the Pritstick - just to be sure.&lt;/p&gt;
+
+&lt;p&gt;7) Firmware. Sometimes I think, &amp;ldquo;Why Prusa Original Mk2? Why you do that?&amp;rdquo;. There&amp;rsquo;s a large scratch in the Heat Bed of mine, which happened during calibration - for some reason - when the extruder head decided to submarine into it.&lt;/p&gt;
+
+&lt;p&gt;8) Often multi-part models are best printed in separate jobs. This way if one part unsticks from the bed and takes up residence on the extruder head, it doesn&amp;rsquo;t get dragged through the other components, which until this point were printing perfectly well.&lt;/p&gt;
+
+&lt;p&gt;9) Cheap filament. Spare yourself. It&amp;rsquo;s your ticket to a numb night toggling printer settings, hoping for better.&lt;/p&gt;
+
+&lt;p&gt;10) Ambient temperature is a factor. Cold rooms will amplify issues. I&amp;rsquo;m on a run of good quality prints at the moment, but have to acknowledge ambient temp works in my favour as we head into UK Summer. Noted that I had a slew of fails through winter&amp;hellip; Similar models TBF.&lt;/p&gt;
+
+&lt;p&gt;11) Mitigation. For me.. set the bed temperature at 60c, put a 215c first layer down at 0.15mm, and then revert to 205c therafter - whatever the model resolution. Shotgun approach or your new personal mantra..?&lt;/p&gt;
+
+&lt;p&gt;12) Software. Good software will accelerate your path to making things you&amp;rsquo;ve designed yourself, rather than just printing off-the-shelf models others have made. I&amp;rsquo;ve tried a few applications, and I&amp;rsquo;ve settled on Fusion 360. It&amp;rsquo;s free for personal use, has a relatively shallow learning curve, and is intuitive to use.&lt;/p&gt;
+
+&lt;p&gt;13) Print stuff. It&amp;rsquo;s often not plain sailing, and were it we&amp;rsquo;d learn nothing. I&amp;rsquo;ll wager, regardless of how much you spend on the machine itself, there&amp;rsquo;ll be some trial and error required.&lt;/p&gt;
+
+&lt;p&gt;This is &lt;a href=&#34;https://www.thingiverse.com/slippytrumpet/designs&#34;&gt;me on thingiverse&lt;/a&gt;. &lt;a href=&#34;https://www.thingiverse.com/slippytrumpet/designs&#34;&gt;Learning as I go&lt;/a&gt;. Show me yours.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://cdn.thingiverse.com/renders/18/1c/e3/85/7a/b88a46457e98d32ef92f633f82a1fe40_preview_featured.jpeg&#34; alt=&#34;alt text&#34; title=&#34;Fidget Spinner&#34; /&gt;
+&lt;center&gt;Picture. Fidget Spinner&lt;/center&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>slippytrumpet.io</title>
+    <link>https://slippytrumpet.io/tags/badgerdb/index.xml</link>
+    <description>Recent content on slippytrumpet.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="https://slippytrumpet.io/tags/badgerdb/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Sett, a BadgerDB abstraction</title>
+      <link>https://slippytrumpet.io/posts/sett-a-badgerdb-abstraction/</link>
+      <pubDate>Fri, 04 May 2018 10:08:30 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/sett-a-badgerdb-abstraction/</guid>
+      <description>
+
+&lt;h2 id=&#34;a-little-go-package-to-make-badgerdb-easier-for-me-to-work-with&#34;&gt;A little Go package to make BadgerDB easier (for me) to work with&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve noticed that as an &amp;ldquo;older&amp;rdquo; developer, often, one of the first things I&amp;rsquo;ll do with a new package/API I&amp;rsquo;m using, is abstract it into just the bits I need and/or that my cognitive resources can cope with.&lt;/p&gt;
+
+&lt;p&gt;The end result is often something akin to plain english (in terms of code), and while I&amp;rsquo;m not sure this says much for my cognition and memory, I do often wonder why this is not better syntax full stop?&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an example. This package, named &lt;a href=&#34;https://github.com/olliephillips/sett&#34;&gt;Sett&lt;/a&gt;, abstracts the &lt;a href=&#34;https://github.com/dgraph-io/badger&#34;&gt;BadgerDB&lt;/a&gt; API, the focus simply on easy reuse of the BadgerDB methods that I&amp;rsquo;m likely to want to use most frequently.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not suggesting there&amp;rsquo;s anything wrong with the BadgerDB API, only that, for me, the syntax seems quite complex and is therefore not easy to recall. Hence me writing Sett which literally just hides the complicated code enabling me to be more productive with BadgerDB.&lt;/p&gt;
+
+&lt;p&gt;To give one example, below we retrieve the value of a single key  from the data store and print it. First with the BadgerDB method, and then with Sett.&lt;/p&gt;
+
+&lt;h3 id=&#34;get-with-badgerdb&#34;&gt;Get with BadgerDB&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;// BadgerDB
+var answer []byte
+err := db.View(func(txn *badger.Txn) error {
+  item, err := txn.Get([]byte(&amp;quot;question&amp;quot;))
+  if err != nil {
+    return err
+  }
+  answer, err := item.Value()
+  if err != nil {
+    return err
+  }
+  return nil
+})
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Printf(&amp;quot;The answer is: %s\n&amp;quot;, answer)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;get-with-sett&#34;&gt;Get with Sett&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;// Sett
+answer, err := db.Get(&amp;quot;question&amp;quot;)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Printf(&amp;quot;The answer is: %s\n&amp;quot;, answer)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;
+Which version can you remember?&lt;/p&gt;
+
+&lt;p&gt;I should however point out that in BadgerDB, &lt;code&gt;db.View&lt;/code&gt; is a read transaction wrapper.  So, while the above examples both include a single &lt;code&gt;Get&lt;/code&gt; transaction, BadgerDB could accomodate more.&lt;/p&gt;
+
+&lt;p&gt;We could for example retrieve a second key in the same transaction, which would doubtless be more efficient than the two sequential &lt;code&gt;db.View&lt;/code&gt; transactions, required to get two keys when using Sett.&lt;/p&gt;
+
+&lt;p&gt;But, realistically, how often will I want more than one key, selected by specific key? Should I find the need, a small modification to the Sett API could facilitate the return of multples keys in the one &lt;code&gt;GET&lt;/code&gt; call.&lt;/p&gt;
+
+&lt;h2 id=&#34;virtual-tables&#34;&gt;&amp;ldquo;Virtual&amp;rdquo; tables&lt;/h2&gt;
+
+&lt;p&gt;One feature of the Sett API that I find indispensible, is virtual tables.&lt;/p&gt;
+
+&lt;p&gt;Tables are effectively created by adding a prefix to the key which is stored in BadgerDB, hence virtual, since tables are not a feature of BadgerDB.&lt;/p&gt;
+
+&lt;p&gt;With an interface formalised through the Sett API, I&amp;rsquo;ve found it much easier to reason about the data I&amp;rsquo;m working with, by thinking in terms of tables.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s an example which shows how the use of these virtual tables allows key reuse.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;s.Table(&amp;quot;client&amp;quot;).Set(&amp;quot;1234&amp;quot;, &amp;quot;client data&amp;quot;)
+// real key is &amp;quot;client1234&amp;quot;
+s.Table(&amp;quot;client&amp;quot;).Get(&amp;quot;1234&amp;quot;)
+// returns &amp;quot;client data&amp;quot;
+
+s.Table(&amp;quot;supplier&amp;quot;).Set(&amp;quot;1234&amp;quot;, &amp;quot;supplier data&amp;quot;)
+// real key is &amp;quot;supplier1234&amp;quot;
+s.Table(&amp;quot;supplier&amp;quot;).Get(&amp;quot;1234&amp;quot;)
+// returns &amp;quot;supplier data&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;
+Tables also allow us to implement other nice features such as &lt;code&gt;Drop()&lt;/code&gt; which, as you might expect, deletes the virtual table or more accurately, all keys with the table prefix.&lt;/p&gt;
+
+&lt;h2 id=&#34;updates&#34;&gt;Updates&lt;/h2&gt;
+
+&lt;p&gt;BadgerDB also includes a &lt;code&gt;db.Update&lt;/code&gt; transaction wrapper designed to wrap &lt;code&gt;Set&lt;/code&gt; and &lt;code&gt;Delete&lt;/code&gt; transactions, and it&amp;rsquo;s possible to write or delete multiple items by key.&lt;/p&gt;
+
+&lt;p&gt;This is definitely something I want to do efficiently via Sett, so I implemented batch updates - and the API is not dissimilar to the functionality that used to exist in BadgerDB itself!&lt;/p&gt;
+
+&lt;p&gt;Items are added to the dataset to be stored using &lt;code&gt;Batchcup()&lt;/code&gt;`.&lt;/p&gt;
+
+&lt;p&gt;Large datasets are split into smaller batches of 500 (by default) and each batch of 500 is passed to a goroutine tasked with inserting those 500 keys. We can achieve very high write speed using concurrency and goroutines, though optimum batchsize will depend on size of the dataset and the performance of your hardware.&lt;/p&gt;
+
+&lt;p&gt;Sett splits the dataset into batches for you, in the background, no need to write your own goroutines.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a very simple example which creates a batch of three keys/values, before submitting the batch to BadgerDB for insertion to the &amp;ldquo;client&amp;rdquo; table.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;s.Batchup(&amp;quot;hello&amp;quot;, &amp;quot;world&amp;quot;)
+s.Batchup(&amp;quot;hello-again&amp;quot;, &amp;quot;world&amp;quot;)
+s.Batchup(&amp;quot;goodbye&amp;quot;, &amp;quot;world&amp;quot;)
+
+s.Table(&amp;quot;client&amp;quot;).SetBatch()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;
+There&amp;rsquo;s more to Sett, and the README on Github covers it.&lt;/p&gt;
+
+&lt;p&gt;And there&amp;rsquo;s room to improve it. One area of concern is reporting and returning from goroutines which error, and this is something I&amp;rsquo;ll be looking into.&lt;/p&gt;
+
+&lt;p&gt;If you find Sett useful, let me know in the comments. If I&amp;rsquo;ve made any errors please also let me know. I&amp;rsquo;m always learning.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

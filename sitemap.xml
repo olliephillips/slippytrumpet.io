@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://slippytrumpet.io/</loc>
+    <lastmod>2018-05-04T10:08:30+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/sett-a-badgerdb-abstraction/</loc>
+    <lastmod>2018-05-04T10:08:30+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/octogon-gcode-file-uploader/</loc>
+    <lastmod>2017-12-05T23:05:39+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/3d-printed-drone-build/</loc>
+    <lastmod>2017-11-30T21:34:28+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/experiments-with-message-queuing-over-ethernet-frames/</loc>
+    <lastmod>2017-07-10T17:27:33+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/running-your-app-as-service-on-pi-zero-w/</loc>
+    <lastmod>2017-06-08T10:27:15+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/3d-printing-learnings-shared/</loc>
+    <lastmod>2017-05-18T19:57:59+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/webbluetooth-to-mqtt-gateway/</loc>
+    <lastmod>2017-04-07T12:36:46+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/raspberry-pi-zero-w-setup/</loc>
+    <lastmod>2017-03-17T16:06:50+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/a-little-bit-of-web-bluetooth/</loc>
+    <lastmod>2017-02-09T15:08:26+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/building-an-rc-car-with-espruino-on-esp8266/</loc>
+    <lastmod>2016-11-16T09:18:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/letsencrypt-and-go/</loc>
+    <lastmod>2016-10-31T18:43:50+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/rethinkdb-the-end-of-the-beginning/</loc>
+    <lastmod>2016-10-25T15:08:26+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/about/</loc>
+    <lastmod>2015-06-20T14:02:37+02:00</lastmod>
+  </url>
+  
+</urlset>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>slippytrumpet.io</title>
+    <link>https://slippytrumpet.io/tags/webbluetooth/index.xml</link>
+    <description>Recent content on slippytrumpet.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="https://slippytrumpet.io/tags/webbluetooth/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Web Bluetooth to MQTT Gateway with Puck.js</title>
+      <link>https://slippytrumpet.io/posts/webbluetooth-to-mqtt-gateway/</link>
+      <pubDate>Fri, 07 Apr 2017 12:36:46 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/webbluetooth-to-mqtt-gateway/</guid>
+      <description>
+
+&lt;h2 id=&#34;if-you-read-a-little-bit-of-web-bluetooth-https-slippytrumpet-io-posts-a-little-bit-of-web-bluetooth-you-ll-know-a-bit-about-puck-js-and-the-new-web-bluetooth-api-already-but-what-aside-from-building-a-gimmicky-two-factor-authentication-system-can-you-do-with-it&#34;&gt;If you read &lt;a href=&#34;https://slippytrumpet.io/posts/a-little-bit-of-web-bluetooth/&#34;&gt;A little bit of Web Bluetooth&lt;/a&gt; you&amp;rsquo;ll know a bit about Puck.js and the new Web Bluetooth API already. But what, aside from building a gimmicky two factor authentication system, can you do with it?&lt;/h2&gt;
+
+&lt;p&gt;I had some ideas.&lt;/p&gt;
+
+&lt;p&gt;What about an interface through which you can program multiple Pucks at the same time? The Web IDE allows you to connect and program one Puck at a time. What if I want a few doing the same thing, it would be nice to set them up in one go? We&amp;rsquo;ll call this a Console.&lt;/p&gt;
+
+&lt;p&gt;What about a Relay - whereby one Puck controls others in a master/slave configuration? Now you can do this directly between Pucks, but we could use Web Bluetooth to make a Relay.&lt;/p&gt;
+
+&lt;p&gt;What about individual Pucks, communicating via Web Bluetooth, with each other over the Internet using MQTT, or just controlled from a remote location with MQTT? A Gateway?&lt;/p&gt;
+
+&lt;p&gt;Three interesting ideas: a Console, a Relay and a Gateway.&lt;/p&gt;
+
+&lt;p&gt;So here is &lt;a href=&#34;https://olliephillips.github.io/webbleMQ/&#34;&gt;WebbleMQ&lt;/a&gt;, which is all of these things. It&amp;rsquo;s a HTML5 &amp;amp; Javascript application which allows you connect multiple Pucks.&lt;/p&gt;
+
+&lt;p&gt;Each Puck is tracked on a connection ID, and depending on the mode that is set, it lets you interact with the connected Pucks in different ways.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://slippytrumpet.io/images/webblemq.png&#34; alt=&#34;alt text&#34; title=&#34;The WebbleMQ Interface&#34; /&gt;
+Pictured. The WebbleMQ interface&lt;/p&gt;
+
+&lt;p&gt;Though I wrote it specifically for Puck.js, the Web Bluetooth API connection filter is quite broad. It looks for devices which, like the Puck, support the NORDIC UART bluetooth service. So it could well work for other devices which support this service. I haven&amp;rsquo;t tested.&lt;/p&gt;
+
+&lt;p&gt;The source code for the application, as well as being readable in the web page, &lt;a href=&#34;https://github.com/olliephillips/webbleMQ&#34;&gt;can also be found on Github here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;relay-mode&#34;&gt;Relay mode&lt;/h3&gt;
+
+&lt;p&gt;One device, operating as Master, can control several devices which are configured as Slaves.&lt;/p&gt;
+
+&lt;p&gt;For example, it&amp;rsquo;s simple to turn the Pucks&amp;rsquo; onboard LEDs on and off with a program running on master device such as this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var prog1 = &amp;quot;LED1.set();LED2.set();LED3.set();\n&amp;quot;;
+var prog2 = &amp;quot;LED1.reset();LED2.reset();LED3.reset();\n&amp;quot;;
+var on = false;
+setInterval(function(){
+  var prog = prog2;
+  if(!on){prog = prog1;}
+  Bluetooth.write(prog);
+  on = !on;
+}, 5000);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;console-mode&#34;&gt;Console mode&lt;/h3&gt;
+
+&lt;p&gt;In Console mode, all devices listen to input from the console. We can programatically control several devices at once, we just key our commands to the console window and the code is passed to, and executed on, all connected Pucks.&lt;/p&gt;
+
+&lt;h3 id=&#34;mqtt-modes-the-fun-stuff&#34;&gt;MQTT modes. The fun stuff&lt;/h3&gt;
+
+&lt;p&gt;We&amp;rsquo;ve two modes available here, &amp;ldquo;Announced&amp;rdquo; and &amp;ldquo;Unannounced&amp;rdquo;. I&amp;rsquo;ll explain the difference, but to be clear, neither mode is secure.&lt;/p&gt;
+
+&lt;p&gt;The MQTT broker used by default is the public &lt;code&gt;iot.eclipse.org&lt;/code&gt; broker and though the topic ids used for publishing on are quite obscure in their format, e.g. &lt;code&gt;/wmq/pub/t7fldnrthv205btnafjzg&lt;/code&gt;, this is not secure. If someone knows or guesses the topic id, they can listen and send on the same topic too. Don&amp;rsquo;t send your bank details :)&lt;/p&gt;
+
+&lt;p&gt;That said, if you need security, you could fork the application and change the MQTT broker to one which provides authentication. I didn&amp;rsquo;t need.&lt;/p&gt;
+
+&lt;h3 id=&#34;mqtt-unannounced&#34;&gt;MQTT &amp;ldquo;unannounced&amp;rdquo;&lt;/h3&gt;
+
+&lt;p&gt;In this mode each device has its own publish topic and subscribe topic. If you connect multiple Pucks, then Pucks can subscribe to another Puck&amp;rsquo;s publish topic, so they&amp;rsquo;d in effect be listening to it.&lt;/p&gt;
+
+&lt;h3 id=&#34;mqtt-announced&#34;&gt;MQTT &amp;ldquo;announced&amp;rdquo;&lt;/h3&gt;
+
+&lt;p&gt;Same as above, but device advertises its presence, both the topic it is publishing on and subscribed to, every 10 seconds on a third topic: &lt;code&gt;/wmq/playing&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This topic is used by all connected devices in MQTT announced mode. So, in announced mode someone could check this topic and find pucks they could control, those users happy to allow their Puck to be controlled remotely over MQTT.&lt;/p&gt;
+
+&lt;h2 id=&#34;that-s-it&#34;&gt;That&amp;rsquo;s it&lt;/h2&gt;
+
+&lt;p&gt;The appilication is not without a few glitches, it was a weekends work, and primarilly a proof of concept to help me get familiar with Web Bluetooth.&lt;/p&gt;
+
+&lt;p&gt;It could be improved. For example a free text box rather than select for MQTT topic would allow subscriptions to Pucks found publishing in &lt;code&gt;wmq/playing&lt;/code&gt;. Better yet a check of the &lt;code&gt;wmq/playing&lt;/code&gt; topic which adds all available devices to the publish and subscribe select box options. Feel free to fork it and send pull requests.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s not especially practical either. You have to have a computer running a Chrome Browser in order to let your Pucks communicate over MQTT. A proper gateway would be a server application on a Raspeberry Pi for example.&lt;/p&gt;
+
+&lt;p&gt;But it is, hopefully, a bit of fun, which other Puck owners might want to experiment with, and which shows off the potential of Web Bluetooth a little more.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A little bit of Web Bluetooth</title>
+      <link>https://slippytrumpet.io/posts/a-little-bit-of-web-bluetooth/</link>
+      <pubDate>Thu, 09 Feb 2017 15:08:26 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/a-little-bit-of-web-bluetooth/</guid>
+      <description>
+
+&lt;h2 id=&#34;communicating-using-the-bluetooth-protocol-has-traditionally-been-the-sole-preserve-of-native-applications-now-you-can-do-it-from-a-web-page&#34;&gt;Communicating using the Bluetooth protocol has traditionally been the sole preserve of native applications. Now you can do it from a web page!&lt;/h2&gt;
+
+&lt;p&gt;This is the first of two short posts on my experiments with &lt;a href=&#34;http://www.espruino.com/Puck.js&#34;&gt;Puck.js&lt;/a&gt; and &lt;a href=&#34;https://developers.google.com/web/updates/2015/07/interact-with-ble-devices-on-the-web#before_we_start&#34;&gt;Web Bluetooth&lt;/a&gt;. This one looks at security; the second will look at a &lt;a href=&#34;https://olliephillips.github.io/webbleMQ/&#34;&gt;Web Bluetooth to MQTT gateway&lt;/a&gt; experiment.&lt;/p&gt;
+
+&lt;h3 id=&#34;what-s-web-bluetooth&#34;&gt;What&amp;rsquo;s Web Bluetooth?&lt;/h3&gt;
+
+&lt;p&gt;Some may know, that from Google Chrome v56, the Web Bluetooth API went from being an experimental &amp;ldquo;opt-in&amp;rdquo; feature to enabled by default. It supports communication between devices that implement Bluetooth 4.0 (and above) and uses Bluetooth Low Energy (BLE), a more power efficient protocol.&lt;/p&gt;
+
+&lt;p&gt;As stated in the introduction earlier, once the preserve of native applications, now Web Developers can build applications which talk to physical hardware over BLE from websites - applications which match the capabilities of native apps.&lt;/p&gt;
+
+&lt;p&gt;This is exciting.&lt;/p&gt;
+
+&lt;h3 id=&#34;is-it-secure&#34;&gt;Is it secure?&lt;/h3&gt;
+
+&lt;p&gt;Since the Chrome 56 release, some &lt;a href=&#34;https://www.theregister.co.uk/2017/02/05/chrome_56_quietly_added_bluetooth_snitch_api/&#34;&gt;reports have cited security and privacy concerns&lt;/a&gt;, and many people are clamouring to turn the feature off.&lt;/p&gt;
+
+&lt;p&gt;But should they be concerned? In my view, no.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s easy to surmise that unscrupulous website owners might try and take advantage of this; that device detection could be used as a mechanism for tracking - just like cookies - but the mechanics of the Web Bluetooth API seem to have security firmly in mind. It looks like it would be hard to abuse from an application, both intentionally and inadvertently.&lt;/p&gt;
+
+&lt;p&gt;First, it&amp;rsquo;s HTTPS only. You can&amp;rsquo;t use Web Bluetooth unless your website is served securely.&lt;/p&gt;
+
+&lt;p&gt;Second, to initiate a device scan, it has to be in response to a user action such as a mouse click or finger swipe. You can&amp;rsquo;t trigger it directly from code - and you can&amp;rsquo;t emulate these events programmatically to fool the Web Bluetooth API.&lt;/p&gt;
+
+&lt;p&gt;However, one might argue that website visitors could be fooled.&lt;/p&gt;
+
+&lt;p&gt;For example, what if you attach an &lt;code&gt;onClick&lt;/code&gt; event listener to the &lt;code&gt;&amp;lt;body&amp;gt;&lt;/code&gt; element of the DOM? Would a mouse click anywhere on the page initiate a device scan?&lt;/p&gt;
+
+&lt;p&gt;It would.&lt;/p&gt;
+
+&lt;p&gt;But hold your horses, so you can do this, is there any real risk? I&amp;rsquo;d say &amp;lsquo;no&amp;rsquo; again.&lt;/p&gt;
+
+&lt;p&gt;To understand why, we need to look at what happens next. We need to look at how a device scan works; how does it notify the user  of devices in range which it can connect to, and; more importantly, at what stage does the browser have access to any information about these devices (specifically, we&amp;rsquo;re concerned about information exposed by the Web Bluetooth API object - about scanned devices - which could be stored, used for connection attempts, reading &lt;a href=&#34;https://www.bluetooth.com/specifications/gatt/characteristics&#34;&gt;service characteristics&lt;/a&gt;, or just just &amp;lsquo;plain evil&amp;rsquo; tracking?&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see.&lt;/p&gt;
+
+&lt;p&gt;This code initiates a Web Bluetooth device scan. You have to set it up as callback to an event listener like &lt;code&gt;click&lt;/code&gt;, but once the event triggers, a &amp;lsquo;device chooser&amp;rsquo; pop-up will appear near the address bar of the Chrome Browser listing devices in range.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;navigator.bluetooth.requestDevice({
+	acceptAllDevices: true
+}).then(device =&amp;gt; { 
+	console.log(device)
+}).catch(error =&amp;gt; { console.log(error);});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;p&gt;The above will list all BLE devices in range, but in your application, you can define filters so that only the types of device your app can interact with, will appear. For example, use a name prefix if devices have a common name, or you can filter on &lt;a href=&#34;https://www.bluetooth.com/specifications/gatt/services&#34;&gt;GATT service&lt;/a&gt; (GATT represents &amp;ldquo;Generic Attribute Profile&amp;rdquo;, and broadly put, GATT services describe what a device is able to do).&lt;/p&gt;
+
+&lt;p&gt;Following the scan, the user is able to pick the device they want the web page to connect to, but until they do, our script can&amp;rsquo;t process code to connect, and our script/web page knows NOTHING about the devices in the device chooser, the devices in range.&lt;/p&gt;
+
+&lt;p&gt;Also that &amp;lsquo;device chooser&amp;rsquo;.. it&amp;rsquo;s a part of the Chrome browser application, and nothing to do with the webpage and its DOM. So you can&amp;rsquo;t interact with it from code.&lt;/p&gt;
+
+&lt;p&gt;From here the user can choose a device, or cancel. I&amp;rsquo;ve noticed ignoring the device chooser and doing something else like opening the Developer Console will trigger &amp;lsquo;cancel&amp;rsquo; too - I don&amp;rsquo;t know what other actions will do this.&lt;/p&gt;
+
+&lt;p&gt;In the above code &amp;lsquo;cancelling&amp;rsquo;, however activated, will cause an error to be logged to console.&lt;/p&gt;
+
+&lt;p&gt;If the user chooses to connect to a device, then a &lt;code&gt;BluetoothDevice&lt;/code&gt; object is passed to the script which, for my Puck device, contains the following information.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;BluetoothDevice {
+	id: &amp;quot;0L3/Rdv+ZzblpiXmJPlO3A==&amp;quot;, 
+	name: &amp;quot;Puck.js bb18&amp;quot;, 
+	gatt: BluetoothRemoteGATTServer, 
+	ongattserverdisconnected: null
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;
+But, remember, I allowed the web application to see this, by allowing my browser to connect to it.&lt;/p&gt;
+
+&lt;p&gt;This device scan &amp;amp; connection process must be followed every time the user wants to connect a device - as far as I can tell there is no memorizing, nor any pairing.&lt;/p&gt;
+
+&lt;p&gt;So this looks fairly secure to me. Hard for web developers to abuse.&lt;/p&gt;
+
+&lt;p&gt;Can networks of websites leverage Web Bluetooth? Like they might do cookies?&lt;/p&gt;
+
+&lt;p&gt;I don&amp;rsquo;t know, but in my testing, the &lt;code&gt;BluetoothDevice.id&lt;/code&gt; is not a constant. It seems to be random and rotates on connection. So, if trying to track JUST allowed/connected devices, you could not rely on &lt;code&gt;id&lt;/code&gt; website to website. &lt;code&gt;BluetoothDevice.name&lt;/code&gt; can be constant though.&lt;/p&gt;
+
+&lt;p&gt;Can Google see any data&amp;hellip;? What if you compromise Chrome&amp;hellip;? Is the API secure&amp;hellip;? We&amp;rsquo;ll all know in time.&lt;/p&gt;
+
+&lt;p&gt;But, the last point I want to make on Web Bluetooth, is that where Web Bluetooth offers no data on, nor any programmatic access to, devices in range.. a native app, written in Node, Go, C or similar, running on hardware as accessible and cheap as a Raspberry Pi 3, will give you a lot of info - without asking for any permission whatsoever!&lt;/p&gt;
+
+&lt;p&gt;So, if you&amp;rsquo;re going to be tracked unknowingly via your Bluetooth devices, it&amp;rsquo;s less likely to be via a website, than from a cheap home built Bluetooth scanner, running out of someone&amp;rsquo;s living room.&lt;/p&gt;
+
+&lt;h3 id=&#34;so-that-said-what-can-you-do-with-web-bluetooth&#34;&gt;So, that said, what can you do with Web Bluetooth?&lt;/h3&gt;
+
+&lt;p&gt;Since security is the general theme of this post, I&amp;rsquo;ve built a totally impractical 2 factor authentication demo which uses Puck.js as a hardware fob to authenticate the user, a bit like how the banks do with online account access.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s impractical since it&amp;rsquo;s all client side, so not secure, but some server calls could remedy this. But you&amp;rsquo;d still need a Puck to use it!&lt;/p&gt;
+
+&lt;p&gt;You can see the &lt;a href=&#34;https://olliephillips.github.io/areyoupucker/&#34;&gt;interface here&lt;/a&gt;. The website sends a random four colour sequence to the Puck (which has three onboard LEDs - Red, Green and Blue).&lt;/p&gt;
+
+&lt;p&gt;The sequence, once replicated on the web form interface, unlocks the form so that it can be submitted.&lt;/p&gt;
+
+&lt;p&gt;Video below shows how it works.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;instagram-media&#34; data-instgrm-captioned data-instgrm-version=&#34;7&#34; style=&#34; background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:658px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);&#34;&gt;&lt;div style=&#34;padding:8px;&#34;&gt; &lt;div style=&#34; background:#F8F8F8; line-height:0; margin-top:40px; padding:50.0% 0; text-align:center; width:100%;&#34;&gt; &lt;div style=&#34; background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAMUExURczMzPf399fX1+bm5mzY9AMAAADiSURBVDjLvZXbEsMgCES5/P8/t9FuRVCRmU73JWlzosgSIIZURCjo/ad+EQJJB4Hv8BFt+IDpQoCx1wjOSBFhh2XssxEIYn3ulI/6MNReE07UIWJEv8UEOWDS88LY97kqyTliJKKtuYBbruAyVh5wOHiXmpi5we58Ek028czwyuQdLKPG1Bkb4NnM+VeAnfHqn1k4+GPT6uGQcvu2h2OVuIf/gWUFyy8OWEpdyZSa3aVCqpVoVvzZZ2VTnn2wU8qzVjDDetO90GSy9mVLqtgYSy231MxrY6I2gGqjrTY0L8fxCxfCBbhWrsYYAAAAAElFTkSuQmCC); display:block; height:44px; margin:0 auto -44px; position:relative; top:-22px; width:44px;&#34;&gt;&lt;/div&gt;&lt;/div&gt; &lt;p style=&#34; margin:8px 0 0 0; padding:0 4px;&#34;&gt; &lt;a href=&#34;https://www.instagram.com/p/BQTLhASA27a/&#34; style=&#34; color:#000; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none; word-wrap:break-word;&#34; target=&#34;_blank&#34;&gt;Are you pucker?&lt;/a&gt;&lt;/p&gt; &lt;p style=&#34; color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;&#34;&gt;A video posted by Ollie (@slippytrumpet) on &lt;time style=&#34; font-family:Arial,sans-serif; font-size:14px; line-height:17px;&#34; datetime=&#34;2017-02-09T17:44:45+00:00&#34;&gt;Feb 9, 2017 at 9:44am PST&lt;/time&gt;&lt;/p&gt;&lt;/div&gt;&lt;/blockquote&gt;
+&lt;script async defer src=&#34;//platform.instagram.com/en_US/embeds.js&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also written a &lt;a href=&#34;https://olliephillips.github.io/webbleMQ/&#34;&gt;Web Bluetooth MQTT gateway&lt;/a&gt; which facilitates master/slave communication between Pucks, console control of multiple Pucks at the same time, as well as communication of data over MQTT.&lt;/p&gt;
+
+&lt;p&gt;I will cover this in another post.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

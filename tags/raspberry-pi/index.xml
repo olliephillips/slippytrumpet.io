@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>slippytrumpet.io</title>
+    <link>https://slippytrumpet.io/tags/raspberry-pi/index.xml</link>
+    <description>Recent content on slippytrumpet.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <atom:link href="https://slippytrumpet.io/tags/raspberry-pi/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Octogon G-Code File Uploader</title>
+      <link>https://slippytrumpet.io/posts/octogon-gcode-file-uploader/</link>
+      <pubDate>Tue, 05 Dec 2017 23:05:39 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/posts/octogon-gcode-file-uploader/</guid>
+      <description>
+
+&lt;h2 id=&#34;an-automatic-file-upload-utility-for-octoprint&#34;&gt;An automatic file upload utility for OctoPrint&lt;/h2&gt;
+
+&lt;p&gt;Octogon is a simple command line utility which will monitor a single folder on your local file system for the addition/modification of &lt;code&gt;.stl&lt;/code&gt; and &lt;code&gt;.gcode&lt;/code&gt; extension files and automatically copy them to OctoPrint so they appear in your files list.&lt;/p&gt;
+
+&lt;h3 id=&#34;why&#34;&gt;Why?&lt;/h3&gt;
+
+&lt;p&gt;My 3D Printer is right next to me at the moment. But getting files onto it, configuring it, and monitoring it, are jobs that are a bit painful in this wireless age. Everything is done via the LCD control panel and SD card.&lt;/p&gt;
+
+&lt;p&gt;So when I found out about &lt;a href=&#34;http://octoprint.org/&#34;&gt;OctoPrint&lt;/a&gt;, a print server for 3D Printers which runs on a Raspberry Pi, I did it. I bought a Raspberry Pi and installed &lt;a href=&#34;https://octopi.octoprint.org/&#34;&gt;OctoPi&lt;/a&gt;, the prebuilt Raspberry Pi image which includes OctoPrint as well as some other utilities.&lt;/p&gt;
+
+&lt;p&gt;OctoPrint has been a relevation. It offers remote monitoring and control of the 3D printer over LAN - and WAN so long as you configure your router&amp;rsquo;s firewall correctly  - so you can view, monitor, tweak and pause/stop a print job, over a wifi connection.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/olliephillips/octogon&#34;&gt;Octogon&lt;/a&gt; is a simple utility written in Go. It addresses one tiny weakspot in my OctoPrint setup and workflow: the need to physically upload my G-code files via OctoPrint&amp;rsquo;s web interface. Using Octogon, they just appear in the file list and are available for printing.&lt;/p&gt;
+
+&lt;p&gt;With Octogon running. A single folder on my computer is monitored. Any new or modified &lt;code&gt;.gcode&lt;/code&gt;and &lt;code&gt;.stl&lt;/code&gt; files saved into that folder are copied over to OctoPrint automatically using SSH. Save a file locally, and it&amp;rsquo;s almost immediately available on the Raspberry Pi.&lt;/p&gt;
+
+&lt;p&gt;Using it is simple. In most cases the only command line option needed to run the program is the password &lt;code&gt;-p&lt;/code&gt; flag.&lt;/p&gt;
+
+&lt;p&gt;For example, you can start Octogon monitoring the current folder like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ octogon -p sshpasswordtoraspberrypi
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;download-octogon&#34;&gt;Download Octogon&lt;/h3&gt;
+
+&lt;p&gt;You can checkout the documentation and source code, as well as download compiled binaries for Linux and Mac, &lt;a href=&#34;https://github.com/olliephillips/octogon&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately the Windows build currently doesn&amp;rsquo;t work - the file monitoring is not reliable - and I&amp;rsquo;ll look into this in the near future.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

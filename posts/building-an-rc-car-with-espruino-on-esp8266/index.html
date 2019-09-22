@@ -1,0 +1,743 @@
+    <!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Ollie Phillips">
+		<meta name="description" content="&#39;We can make this car work again - but over Wifi&#39;, I told the kids. And that was my first mistake.">
+		<meta name="generator" content="Hugo 0.18-DEV" />
+		<title>Building a Remote Control Car with Espruino on ESP8266 &middot; slippytrumpet.io</title>
+		<link rel="shortcut icon" href="https://slippytrumpet.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/style.css">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/highlight.css">
+		
+
+		
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://slippytrumpet.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='https://slippytrumpet.io/about'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>Building a Remote Control Car with Espruino on ESP8266</h1>
+                    <h2 class="headline">
+                    November 16, 2016 
+                    <br><br>
+                    Posted in: 
+                    
+                        
+                            <a href="https://slippytrumpet.io/categories/iot">IoT</a>
+                        
+                    
+                      
+                    <br>
+                    Tagged: 
+                    
+                        
+                            <a href="https://slippytrumpet.io/tags/espruino">espruino</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/esp8266">esp8266</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/websockets">websockets</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/riotjs">riotjs</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/html5">html5</a>
+                        
+                            <a href="https://slippytrumpet.io/tags/nodemcu">nodeMCU</a>
+                        
+                    
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<h2 id="a-broken-radio-controlled-microcar-just-lying-in-a-box-useless-a-little-knowledge-of-espruino-and-winter-nights-closing-in">A broken radio controlled microcar; just lying in a box, useless. A little knowledge of Espruino and winter nights closing in.</h2>
+
+<h2 id="we-can-make-this-car-work-again-but-over-wifi-i-told-the-kids-and-that-was-my-first-mistake">&ldquo;We can make this car work again - but over Wifi&rdquo;, I told the kids. And that was my first mistake.</h2>
+
+<p>First, one of those, &ldquo;blimey this is a long post; maybe I won&rsquo;t bother&rdquo; things.. AKA &ldquo;TL;DR&rdquo;.</p>
+
+<p>Espruino/JavaScript code which runs on a NodeMCU ESP8266 microcontroller and does this..</p>
+
+<ol>
+<li>Provides motor and steering control functions on NodeMCU ESP8266 pins connected to a dual H-bridge module;</li>
+<li>Includes a HTML page to serve which allows us to control the car from a Smartphone on the same Wifi network (tested on iPhone);</li>
+<li>Creates a http/websocket server, which serves the HTML page in (2) and creates a websocket connection which listens for message events from (2) and passes them to (1);
+<br/><br/>
+..can be <a href="https://github.com/olliephillips/espruinoCar">found here</a>.
+<br/><br/>
+You&rsquo;re still here? Excellent.</li>
+</ol>
+
+<h2 id="what-is-espruino">What is Espruino?</h2>
+
+<p>Let&rsquo;s cover this first. <a href="http://www.espruino.com">Espruino</a> is a JavaScript interpreter on a microcontroller.</p>
+
+<p>The project itself comprises both the official microcontroller hardware - there are three different boards: <a href="http://www.espruino.com/Order">Espruino, Espruino Pico, and the latest, Espruino Wifi</a> - and the firmware binary which is a C application that gets flashed (written) to the microcontroller.</p>
+
+<p>The microcontroller boards have a number of pins that can be written to and read from - their voltage determining their state. The pins can be connected to &ldquo;things&rdquo; so you can literally write JavaScript to control them.</p>
+
+<p>Espruino is open source, the firmware can be freely downloaded and there are builds for other microcontrollers based on a similar chip architecture. There are even builds for Linux, so you could use Espruino with a Raspberry Pi.</p>
+
+<p>Implementations vary though. Some builds may not give you all the features of Espruino, and only the official Espruino boards are fully supported and guaranteed to work &ldquo;out-the-box&rdquo;. It&rsquo;s also worth noting that some boards won&rsquo;t offer as much memory as the official boards which can limit their usefulness for some applications.</p>
+
+<p>For this project I used an ESP8266 NodeMCU development board. They are cheap, have built in Wifi, and enough memory for my application.</p>
+
+<p>Before I move on, I should emphasise that Espruino is funded through donations and sales of official boards. Though I&rsquo;m choosing ESP8266 here, I own plenty of the original boards - two Espruino, three Picos and one Espruino Wifi in fact.</p>
+
+<p>When starting out it&rsquo;s a really good idea to get an official board just because they are plug and play. You&rsquo;ll get good support in the <a href="http://forum.espruino.com">Espruino forums</a> too, plus you&rsquo;ll find them useful when prototyping even if your project will eventually run on unofficial hardware.</p>
+
+<h2 id="the-objective">The objective</h2>
+
+<p>Essentially to drive the car over Wifi, maybe even remotely over the Internet, using a web page to control it. For communications, MQTT was my first inclination since I could leave the RC car behind a firewall, whereas using Websockets and a HTTP server I&rsquo;d have to expose the car to the world via port forwarding. But more on this later.</p>
+
+<h2 id="first-attempt">First attempt</h2>
+
+<p>Our donor car was a radio controlled microcar not much bigger than a matchbox car - remember those? I think the scale was something like 1:42.</p>
+
+<p>The steering mechanism of the RC microcar was broken, reason unknown - but it only steered one way. On inspection the steering was operated using two solenoid coils and a magnet on a steering rack. With current applied to each coil the steering rack moved left and right - or should have.</p>
+
+<p>Without using the circuit board of the RC car, I did not understand how I could control the solenoid setup - even if it wasn&rsquo;t broken, and what if it was the circuit board itself that was faulty?</p>
+
+<p>So my first decision was to remove the solenoids, magnet and the circuit board from the car.</p>
+
+<p>In their place I sourced a tiny micro servo on ebay, glued it in and created a simple linkage to the steering rack with stiff wire.</p>
+
+<p>Steering was sorted, but this was a fiddly job and the addition of the servo made it likely the car&rsquo;s body would not fit back on without modification.</p>
+
+<p><img src="/images/micro-servo.png" alt="alt text" title="Micro servo. Fiddly." />
+Pictured: Micro servo, attached to steering rack</p>
+
+<h3 id="next-issue-drive">Next issue, &ldquo;drive&rdquo;</h3>
+
+<p>After some help from a couple of people in the Espruino forums I better understood what was involved in controlling the motor - which required switching the supply polarity to provide forward and reverse motion.</p>
+
+<p>My first attempt used multiple ESP8266 pins, in pairs which I switched as groups between high and low state, essentially wiring them in parallel to hopefully provide sufficient current to drive the motor.</p>
+
+<p>Unfortunately this didn&rsquo;t work.  The motor was rated 75mA at 4.5v. The ESP8266 NodeMCU board could supply 12mA at 3.7v per pin. I wasn&rsquo;t going to have enough pins to get that current.</p>
+
+<p>At this point I wondered about using my Espruino Wifi instead, which I believe can provide 20mA per pin, possibly enough when grouped in parallel. And maybe I would have gone this route, had discussion in the forums not focussed my attention on something call a &ldquo;H-bridge&rdquo;.</p>
+
+<p>A H-bridge is a circuit which operates like a 3 way switch. It allows polarity of voltage to be reversed, which when connected to a motor, rotates it in opposing directions - forward and reverse for our purposes.</p>
+
+<p>After more discussion, and the prospect of making a H-bridge circuit myself from the component parts, I chickened out and went back to ebay where I found a dual H-bridge module for about £1.50 delivered. To control our motor we needed only one of the H-bridge channels.</p>
+
+<p>But there was no way the car&rsquo;s shell was going to fit back on now, modified or not.</p>
+
+<p><img src="/images/h-bridge-with-motor.png" alt="alt text" title="H-bridge attached to motor" />
+Pictured: L9110S Dual H-bridge module</p>
+
+<p>I&rsquo;m not going to cover wiring, pin selection nor code yet, since this is not how the car ended up and could confuse.</p>
+
+<p>I&rsquo;ll cover all this later, but here&rsquo;s the finished &ldquo;first attempt&rdquo;. Now devoid of shell, obviously I went to a lot of trouble to make it look like a car again. Check that rear spoiler out!</p>
+
+<p><img src="/images/microcar.png" alt="alt text" title="RC Microcar" />
+Pictured: Micro servo, 3.7v li-ion battery, NodeMCU ESP8266, H-bridge</p>
+
+<p>At this point we had a working car and a basic code library, which combined allowed us to control the car over Telnet (wireless console) to send stop/go/direction commands.</p>
+
+<p>We got about 20 minutes out of it. Then the car ceased to steer. The micro servo was turning but did not make its stops with the control arm. I had a look inside and it appeared one of the tiny gears had stripped its teeth. I could have ordered a replacement micro servo, but for it to potentially happen again. So this didn&rsquo;t seem like a great idea.</p>
+
+<p>Fortunately, my kids were now interested enough in the potential of the project, that they donated another RC car.</p>
+
+<p>Actually they sold it to me :/</p>
+
+<h2 id="second-attempt">Second attempt</h2>
+
+<p>One bit of feedback from my kids. Despite my efforts, it didn&rsquo;t look like a car. The broken RC microcar was previously a Lamborghini but look what I had turned it into - a monster.</p>
+
+<p>Fortunately, the new donor vehicle, a Mini, was much bigger. We would have no issues with space or refitting the shell.</p>
+
+<p>Two other plus points: first, steering on this car was motor driven. I wouldn&rsquo;t need to add a servo or scratch my head over solenoids, we could use the second channel of the H-bridge to control the steering motor and second; power. The car carried 4 AA batteries, so supplied 6v. I could run that to the 5v power input on the NodeMCU board and we would have enough for everything.</p>
+
+<h2 id="building">Building</h2>
+
+<p>Building the second car was almost trivial. Most of the learning had been done with the first car, and there was so much room to play with.</p>
+
+<p>Power was from the batteries and the two motors had wires we easilly extended and routed to the two channels of the H-bridge. All the components were mounted with hot glue.</p>
+
+<p>Wiring had to be modified slightly to accomodated a second motor attached to the H-bridge, but this second build probably only took about 30 minutes.</p>
+
+<p>We added a buzzer to work as a horn which, as well as being controllable over wifi, we decided would serve to notify us once the car had successfully connected to the Wifi network - there&rsquo;d be no point trying to control the car until it had.</p>
+
+<p><img src="/images/mini.png" alt="alt text" title="Mini" />
+Pictured: RC Mini shell and floorpan, with the NodeMCU and H-bridge module and buzzer glued in.</p>
+
+<p>The code library also needed to be modified to control the steering. You can find the <a href="https://github.com/olliephillips/espruinoCar">full library on Github here</a>, but here&rsquo;s the control piece.</p>
+
+<pre><code>// Control methods for espruinoCar 'ec'
+var ec = {
+  pin: {
+    forward: D4,
+    reverse: D5,
+    left: D14,
+    right: D0,
+    horn: D12
+  },
+  left: function() {
+    digitalWrite(ec.pin.left, 1);
+    digitalWrite(ec.pin.right, 0);
+  },
+  right: function() {
+    digitalWrite(ec.pin.right, 1);
+    digitalWrite(ec.pin.left, 0);
+  },
+  ahead : function() {
+    digitalWrite(ec.pin.left, 0);
+    digitalWrite(ec.pin.right, 0);
+  },
+  drive: function(speed, time){
+    if(time){
+      setTimeout(function(){
+        analogWrite(ec.pin.forward, 0);
+      }, ec.convert.time(time));
+    }
+    analogWrite(ec.pin.forward, ec.convert.speed(speed)); 
+    analogWrite(ec.pin.reverse, 0);
+  },
+  reverse: function(speed, time) {
+    if(time){
+      setTimeout(function(){
+        analogWrite(ec.pin.reverse, 0);
+      }, ec.convert.time(time));
+    }
+    analogWrite(ec.pin.reverse, ec.convert.speed(speed)); 
+    analogWrite(ec.pin.forward, 0);
+  },
+  stop: function() {
+    analogWrite(ec.pin.forward, 0);
+    analogWrite(ec.pin.reverse, 0);
+    digitalWrite(ec.pin.left, 0);
+    digitalWrite(ec.pin.right, 0); 
+  },
+  horn: {
+    toot: function() {
+      setTimeout(function(){
+         digitalPulse(ec.pin.horn, 1, 200);
+      },300);
+      digitalPulse(ec.pin.horn, 1, 200);
+    },
+    honk: function() {
+      digitalPulse(ec.pin.horn, 1, 1000);
+    }
+  },
+  init: function() {
+    pinMode(ec.pin.left, &quot;output&quot;);
+    pinMode(ec.pin.right, &quot;output&quot;);
+    pinMode(ec.pin.forward, &quot;output&quot;);
+    pinMode(ec.pin.reverse, &quot;output&quot;);
+    pinMode(ec.pin.horn, &quot;output&quot;);
+    analogWrite(ec.pin.forward, 0);
+    analogWrite(ec.pin.reverse, 0);
+    digitalWrite(ec.pin.left, 0);
+    digitalWrite(ec.pin.right, 0); 
+  },
+  convert: {
+    speed : function(speed) {
+              var convSpeed = speed/100;
+              return convSpeed;
+    },
+    time : function(time) {
+             var convTime = time* 1000;
+             return convTime;
+    }
+  }
+};
+</code></pre>
+
+<p><br/>
+One thing to note. The pin numbers on the NodeMCU board do not relate to the GPIO pin numbers you need to access them via Espruino, which makes wiring more complicated than it should be.  So for clarity the pin references in the excerpt above all relate to the GPIO pin numbers, not the numbers printed on the board.</p>
+
+<p>The code is fairly self-explanatory I should think. The drive and reverse methods accept <code>speed</code> and <code>time</code> arguments, so the car can be programmed to cover a course with this library alone should we wish.</p>
+
+<p>There are also two utility functions; one which relates speed to a number between 0 and 1, the parameter range for the <code>analogWrite()</code> function and a second, which converts time to a number in milliseconds for the <code>setTimeout()</code> function.</p>
+
+<h2 id="communicating-over-mqtt">Communicating over MQTT</h2>
+
+<p>I mentioned earlier that we wanted to control the RC car over Wifi, possibly remotely over the web too.</p>
+
+<p>MQTT seemed a good choice for communication. The RC car could subscribe (listen) to a topic on a MQTT broker (of which there are many free/test ones) and our client on iPhone would publish short control messages to the MQTT broker via a websocket connection.</p>
+
+<p>The advantage was that we didn&rsquo;t need a direct HTTP connection to the car - something that could be abused. With MQTT the RC car would not serve anything but instead simply listen for messages. It could do this from behind the Wifi router&rsquo;s firewall too.</p>
+
+<p><img src="/images/mqtt.png" alt="alt text" title="MQTT testing" />
+Pictured: Publishing control messages to our RC car.</p>
+
+<p>However I decided it was unlikely we&rsquo;d control the car over the Internet in reality, so it would be sufficient to either connect the RC Car to Wifi, or run the ESP8266 NodeMCU as an access point - whereby it creates a Wifi network we can join, and can expose HTTP on the IP address <code>192.168.4.1</code>.</p>
+
+<p>Using the ESP8266 as an access point would necessitate that it serve all the code and assets we&rsquo;d need for our web based control panel too. While possible this would be significantly more complex, since there&rsquo;s no filesystem on Espruino as such. We&rsquo;d need to persist the assets by writing them to flash memory and we&rsquo;d need to serve them by reading them back from flash memory.</p>
+
+<p>So I elected to use the ESP8266 in station mode, connecting to an existing Wifi network so that any client accessing the HTML control panel page could download the assets required by the page from the Internet.</p>
+
+<p>We&rsquo;d still use websockets to send data, but to a websocket server running on the ESP8266 rather than relaying via an MQTT broker.</p>
+
+<h2 id="the-controller">The Controller</h2>
+
+<p>First things first. Since there was no display on the car, and no communication about the Wifi connection other than a horn toot when connected, it would be helpful to know the IP address in advance.</p>
+
+<p>Typically routers will assign IP addresses on a &ldquo;first come first served&rdquo; basis, meaning our car&rsquo;s IP address would be random, depending on what else was on the network when we switched it on. With no display we&rsquo;d either have to guess it or connect to the Router every time to determine it.</p>
+
+<p>There&rsquo;s a better way - so the first thing I did was connect the ESP8266 NodeMCU to my Wifi network. Once identified in the Router control panel, I assigned it a specific &lsquo;reserved&rsquo; IP address.</p>
+
+<p>Now it would always join the network on the same IP address, so I knew how to reliably connect to the HTTP/Websocket server I was about to write.</p>
+
+<h3 id="introducing-iotui-js">Introducing iotUI.js</h3>
+
+<p><a href="https://github.com/olliephillips/iotUI.js">iotUI.js</a> is a suite of web component controls that I started writing last year. The controls up until this point were mainly aimed at beer brewing so included things like a thermometer and level guages. The interfaces themselves are SVG graphics, which respond to touch and mouse events.</p>
+
+<p>iotUI.js is built on <a href="http://riotjs.com">Riot.js</a>, which is like React, but much easier to get along with in my opinion. As a library it&rsquo;s also more lightweight than React.</p>
+
+<p>Riot.js allows us to create custom HTML components referred to as &ldquo;tags&rdquo; and specify all the logic for how the control works in the tag itself.</p>
+
+<p>To cut what could be a long story, short, all the complexity of adding, interfacing and interacting with the component is abstracted away from the end user. Adding a Riot component to your HTML page that may take input, or trigger events is pretty much as simple as adding a single HTML tag.</p>
+
+<p>I decided to build my control interface with Riot.js, but then went a step further and implemented the component - <a href="https://rawgit.com/olliephillips/iotUI.js/master/examples/f1wheel.html">a steering wheel</a> - in iotUI.js.</p>
+
+<p>Should you wish, you can easilly implement it in your projects too.</p>
+
+<p>I must mention that I didn&rsquo;t design this steering wheel from scratch, but modified it for my needs based on this <a href="https://commons.wikimedia.org/wiki/File:Formula_one_steering_wheel_back.svg">image here</a>. As per the Creative Commons share-alike licensing the image is offered under, you can find the <a href="https://github.com/olliephillips/iotUI.js/blob/master/svg_files/f1-wheel.svg">modified SVG here</a>.</p>
+
+<p>The code for the component is fairly simple; it basically creates event emitters on all the buttons and, using HTML device orientation, a &lsquo;steer&rsquo; event is emitted as the smartphone is rotated like a steering wheel.</p>
+
+<p>If you&rsquo;re interested in how a Riot component is written you can inspect <a href="https://github.com/olliephillips/iotUI.js/blob/master/tags/iotui-f1wheel.tag">the code for the tag here</a>.</p>
+
+<p>Adding the component to the page, is a simple as this:</p>
+
+<pre><code>&lt;iotui-f1wheel 
+  id=&quot;wheel1&quot; wheellabel=&quot;iotUI.js&quot; 
+  primarybuttonlabel=&quot;TOOT&quot; 
+  startbuttonlabel=&quot;START/STOP&quot; 
+  secondarybuttonlabel=&quot;HONK&quot; 
+  width=&quot;540&quot;&gt;
+&lt;/iotui-f1wheel&gt;
+</code></pre>
+
+<p><br/><br/>
+You can see that various attributes can be set to denote, wheel and button labels.</p>
+
+<p>I&rsquo;ve embedded the actual steering wheel component below - open your web browser&rsquo;s javascript console if you like and give the buttons a go! You&rsquo;ll see all emitted events logged to the console.</p>
+
+<p>My MacBook Pro also seems to have a tilt sensor - if you&rsquo;re using a MacBook too, try tipping it forwards and away from you. You&rsquo;ll see some steer event changes, albeit not very useful ones.</p>
+
+<p><iotui-f1wheel 
+  id="wheel1" wheellabel="iotUI.js" 
+  primarybuttonlabel="TOOT" 
+  startbuttonlabel="START/STOP" 
+  secondarybuttonlabel="HONK" 
+  width="500">
+</iotui-f1wheel></p>
+
+<p>The entire HTML page, which also includes the websocket connection and event handlers to send control information back to the websocket server running on the NodeMCU connected to our RC car, looks like this:</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt; 
+&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;iotui-f1wheel id=&quot;wheel1&quot; wheellabel=&quot;iotUI.js&quot; primarybuttonlabel=&quot;TOOT&quot;  startbuttonlabel=&quot;START/STOP&quot; secondarybuttonlabel=&quot;HONK&quot; width=&quot;540&quot;&gt;&lt;/iotui-f1wheel&gt;	
+&lt;script&gt;
+var ws;
+var evnt = {};
+ws = new WebSocket(&quot;ws://&quot; + location.host + &quot;/espruinocar&quot;, &quot;protocolOne&quot;);
+
+function ignitionHandler(){
+  evnt.type = &quot;ignition&quot;;
+  evnt.state = this.state.ignition;
+  ws.send(evnt);
+}
+
+function driveHandler(){
+  evnt.type=&quot;drive&quot;;
+  evnt.state = this.state.drive;
+  ws.send(evnt);
+}
+
+function primaryHandler(){
+  evnt.type=&quot;primarybuttonpush&quot;;
+  ws.send(evnt);
+}
+
+function secondaryHandler(){
+  evnt.type=&quot;secondarybuttonpush&quot;;
+  ws.send(evnt);
+}
+
+function steeringHandler(){
+  evnt.type=&quot;steer&quot;;
+  evnt.state=this.state.steer;
+  ws.send(evnt);
+}
+
+window.onload = function(){	
+  iotUI.addListener('wheel1', 'ignition', ignitionHandler);
+  iotUI.addListener('wheel1', 'primarybuttonpush', primaryHandler);
+  iotUI.addListener('wheel1', 'secondarybuttonpush', secondaryHandler);
+  iotUI.addListener('wheel1', 'drive', driveHandler);
+  iotUI.addListener('wheel1', 'steer', steeringHandler);
+}
+&lt;/script&gt;
+&lt;script src=&quot;https://rawgit.com/olliephillips/iotUI.js/master/iotUI.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h2 id="websocket-server">Websocket server</h2>
+
+<p>We&rsquo;re nearly there.</p>
+
+<p>To recap, we have an Espruino powered RC car; a control library that will send signals to ESP8266 NodeMCU pins; a web component built with Riot.js which will provide a control interface and; a HTML page in which we&rsquo;ll serve the component.</p>
+
+<p>So to the final piece of the puzzle. We need a HTTP server to serve the HTML page and a websocket server, to listen for websocket messages from our web component, and relay them to our control library.</p>
+
+<p>First the servers - actually it&rsquo;s just one server since the websockets module for Espruino, which upgrades the connection to a websocket, can also function as a HTTP server and serve our HTML:</p>
+
+<pre><code>var wifi = require(&quot;Wifi&quot;);
+var ap = {
+  &quot;ssid&quot;: &quot;wif_ssid&quot;,
+  &quot;pwd&quot;: &quot;wifi_password&quot;
+};
+
+// Our servePage handler which renders our controls
+function servePage(req, res) {
+  var page='&lt;!DOCTYPE html&gt;&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot;';
+  page+='content=&quot;width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0&quot;&gt;&lt;/head&gt;';
+  page+='&lt;body&gt;&lt;iotui-f1wheel id=&quot;wheel1&quot; wheellabel=&quot;EspruinoCar&quot; primarybuttonlabel=&quot;TOOT&quot; startbuttonlabel=&quot;START/STOP&quot;';
+  page+='secondarybuttonlabel=&quot;HONK&quot; width=&quot;540&quot;&gt;&lt;/iotui-f1wheel&gt;';
+  page+='&lt;script&gt;var ws;var send={};ws=new WebSocket(&quot;ws://&quot; +';
+  page+='location.host + &quot;/espruinocar&quot;, &quot;protocolOne&quot;);function ignitionHandler()';
+  page+='{send.type=&quot;ignition&quot;;send.state=this.state.ignition;ws.send(JSON.stringify(send));console.log(JSON.stringify(send));}function driveHandler()';
+  page+='{send.type=&quot;drive&quot;;send.state=this.state.drive;ws.send(JSON.stringify(send));console.log(JSON.stringify(send));}function primaryHandler()';
+  page+='{send.type=&quot;primarybuttonpush&quot;;send.state=null;ws.send(JSON.stringify(send));console.log(JSON.stringify(send));}function secondaryHandler()';
+  page+='{send.type=&quot;secondarybuttonpush&quot;;send.state=null;ws.send(JSON.stringify(send));console.log(JSON.stringify(send));}function steeringHandler()';
+  page+='{send.type=&quot;steer&quot;;send.state=this.state.steer;ws.send(JSON.stringify(send));console.log(JSON.stringify(send));}window.onload=function(){';
+  page+='iotUI.addListener(&quot;wheel1&quot;, &quot;ignition&quot;, ignitionHandler);iotUI.addListener(&quot;wheel1&quot;, &quot;primarybuttonpush&quot;,';
+  page+='primaryHandler);iotUI.addListener(&quot;wheel1&quot;, &quot;secondarybuttonpush&quot;, secondaryHandler);iotUI.addListener(&quot;wheel1&quot;,';
+  page+='&quot;drive&quot;, driveHandler);iotUI.addListener(&quot;wheel1&quot;, &quot;steer&quot;, steeringHandler);}&lt;/script&gt;';
+  page+='&lt;script src=&quot;https://rawgit.com/olliephillips/iotUI.js/master/iotUI.js&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;';
+  res.writeHead(200, {'Content-Type': 'text/html'});
+  res.end(page);
+}
+
+// Start everything
+function initCar() {
+  // Initialise pins
+  ec.init();
+
+  // Wifi connection
+  wifi.connect(ap.ssid, {&quot;password&quot;: ap.pwd}, function(err){
+    if(!err){
+      var server = require('ws').createServer(servePage);
+      server.listen(8000);
+      server.on(&quot;websocket&quot;, function(ws) {
+        ws.on('message', function(evt){
+          var ev = JSON.parse(evt);
+          controlMap(ev);
+        });
+      });
+
+      // Signal connected to wifi
+      ec.horn.toot();
+    }
+  });
+}
+
+// Start up from boot
+E.on(&quot;init&quot;, initCar);
+</code></pre>
+
+<p><br/><br/>
+Next, the <code>controlMap(evt)</code> function into which we pass the websocket event message, an object with two properties &lsquo;type&rsquo; and &lsquo;state&rsquo;, and in which there is logic which maps the event to the control library (ec):</p>
+
+<pre><code>// Maps events received over websocket to ec object controls
+function controlMap(event){
+  var forwardSpeed = 70;
+  var reverseSpeed = 40;
+  console.log(&quot;message:&quot; +  event.type +&quot;:&quot; + event.state);
+  switch (event.type){
+    case &quot;ignition&quot;:
+      if (event.state == &quot;off&quot;){ec.stop();}
+    break;
+    case &quot;steer&quot;:
+      switch(event.state){
+        case &quot;left&quot;:
+          ec.left();
+        break;
+        case &quot;neutral&quot;:
+          ec.ahead();
+        break;
+        case &quot;right&quot;:
+          ec.right();
+        break;
+      }
+    break;
+    case &quot;drive&quot;:
+      switch(event.state){
+        case &quot;stop&quot;:
+          ec.stop();
+        break;
+        case &quot;forward&quot;:
+          ec.drive(forwardSpeed);
+        break;
+        case &quot;reverse&quot;:
+          ec.reverse(reverseSpeed);
+        break;
+      }
+    break;
+    case &quot;primarybuttonpush&quot;:
+      ec.horn.toot();
+    break;
+    case &quot;secondarybuttonpush&quot;:
+      ec.horn.honk();
+    break;
+  }
+}
+</code></pre>
+
+<p><br/><br/>
+And that&rsquo;s it!</p>
+
+<p>All that remains is to upload this code to our ESP8266 on the RC Car, and then save it using <code>save()</code> in the console on the left of the Espruino Web IDE. Now whenever the car starts the <code>E.on(&quot;init&quot;, initCar)</code> piece will run our <code>initCar</code> function and the car will connect to the Wifi network.</p>
+
+<p>So we disconnect USB, and switch on the car.</p>
+
+<p>Wait for the horn toot, then connect to <code>http://192.168.0.19:8000</code> from our smartphone browser and off we go!</p>
+
+<p>Actually there&rsquo;s a small gotcha on iPhone. Browsers on iPhone, whether Safari, Chrome or Firefox are all based on Webkit, which does not support the HTTP/1.0 standard, at least not for the purpose of upgrading the connection to websocket, but HTTP/1.0 is the standard used by Espruino.</p>
+
+<p>You can fix this by taking a HEX editor to the Espruino binary and replacing all text instances of &ldquo;HTTP/1.0&rdquo; of which there are two, with &ldquo;HTTP/1.1&rdquo;. This is enough to bamboozle the browser into thinking it&rsquo;s a HTTP/1.1 standard connection, and it seems to upgrade it to websocket with no apparent detrimental side effects.</p>
+
+<p>Flash the customized binary to your ESP8266 and you are away. Thanks to Gordon Williams, the man behind Espruino itself, for that clever idea!</p>
+
+<p>Don&rsquo;t forget, if some of the above code snippets are not that clear, <a href="https://github.com/olliephillips/espruinoCar">all the code is available here</a>.</p>
+
+<p>Finally, my favorite picture if not the best quality one. My two youngest driving their Espruino powered remote control car.</p>
+
+<p><img src="/images/drive-it.png" alt="alt text" title="First drive" />
+Pictured: First drive of our Espruino Wifi remote control car.</p>
+
+<p>Have fun!</p>
+
+<script>
+var evnt = {}
+function output(evnt) {
+  console.log("Event: '" + evnt.type + "' fired. State: '" + evnt.state + "'");
+}
+
+function ignitionHandler(){
+  evnt.type = "ignition";
+  evnt.state = this.state.ignition;
+  output(evnt);
+}
+
+function driveHandler(){
+  evnt.type="drive";
+  evnt.state = this.state.drive;
+  output(evnt);
+}
+
+function primaryHandler(){
+  evnt.type="primarybuttonpush";
+  output(evnt);
+}
+
+function secondaryHandler(){
+  evnt.type="secondarybuttonpush";
+  output(evnt);
+}
+
+function steeringHandler(){
+  evnt.type="steer";
+  evnt.state=this.state.steer;
+  output(evnt);
+}
+
+window.onload = function(){ 
+  iotUI.addListener('wheel1', 'ignition', ignitionHandler);
+  iotUI.addListener('wheel1', 'primarybuttonpush', primaryHandler);
+  iotUI.addListener('wheel1', 'secondarybuttonpush', secondaryHandler);
+  iotUI.addListener('wheel1', 'drive', driveHandler);
+  iotUI.addListener('wheel1', 'steer', steeringHandler);
+}
+</script>
+<script src="https://rawgit.com/olliephillips/iotUI.js/master/iotUI.js"></script>
+
+                </section>
+               </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/slippytrumpet">
+                        <img class="avatar" src="https://slippytrumpet.io/images/avatar.png">
+                        <div>
+                            <span class="dark">Ollie Phillips</span>
+                            <span></span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fslippytrumpet.io%2fposts%2fbuilding-an-rc-car-with-espruino-on-esp8266%2f - Building%20a%20Remote%20Control%20Car%20with%20Espruino%20on%20ESP8266 by @slippytrumpet"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'slippytrumpet';
+    var disqus_identifier = 'https:\/\/slippytrumpet.io\/posts\/building-an-rc-car-with-espruino-on-esp8266\/';
+    var disqus_title = 'Building a Remote Control Car with Espruino on ESP8266';
+    var disqus_url = 'https:\/\/slippytrumpet.io\/posts\/building-an-rc-car-with-espruino-on-esp8266\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/sett-a-badgerdb-abstraction/">Sett, a BadgerDB abstraction<aside class="dates">May 4</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/octogon-gcode-file-uploader/">Octogon G-Code File Uploader<aside class="dates">Dec 5</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/3d-printed-drone-build/">3D Printing a Racing Drone<aside class="dates">Nov 30</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/experiments-with-message-queuing-over-ethernet-frames/">Experiments with Messaging over Ethernet Frames<aside class="dates">Jul 10</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/running-your-app-as-service-on-pi-zero-w/">Running your Application as a Service on Pi Zero W<aside class="dates">Jun 8</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/3d-printing-learnings-shared/">3D Printing. Learnings shared<aside class="dates">May 18</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/webbluetooth-to-mqtt-gateway/">Web Bluetooth to MQTT Gateway with Puck.js<aside class="dates">Apr 7</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/raspberry-pi-zero-w-setup/">Raspberry Pi Zero W &#34;headless&#34; Setup<aside class="dates">Mar 17</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/a-little-bit-of-web-bluetooth/">A little bit of Web Bluetooth<aside class="dates">Feb 9</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://slippytrumpet.io/posts/building-an-rc-car-with-espruino-on-esp8266/">Building a Remote Control Car with Espruino on ESP8266<aside class="dates">Nov 16</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.github.com/olliephillips">
+        github
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2018 Ollie Phillips
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://slippytrumpet.io/js/main.js"></script>
+<script src="https://slippytrumpet.io/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-83287802-2', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+    </body>
+</html>
