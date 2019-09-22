@@ -2,7 +2,7 @@
 baseurl = "https://slippytrumpet.io/"
 languageCode = "en"
 title = "slippytrumpet.io"
-theme = "hugo-cactus-theme-2"
+theme = "hugo-cactus-theme-plus"
 # Enter your tracking code to enable Google Analytics
 googleAnalytics = "UA-83287802-2"
 # Disable comments by leaving disqusShortname empty
