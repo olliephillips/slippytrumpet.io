@@ -1,0 +1,12 @@
+{{- $postCount := .Site.Params.postCount }}
+{{- $page := .Page}}
+{{- with $postCount.enable }}
+<br/>
+	{{- with $postCount.wordcount }}
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">{{ T "article_wordcount" -}}: {{ $page.WordCount }} words.</span>
+	{{- end }}
+	{{- with $postCount.min2read }}
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">{{ T "article_readcount" }}: {{ $page.ReadingTime }} minutes </span>
+	{{- end }}
+	
+{{- end }}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>programming on Slippytrumpet - My blog on the technologies that have been messing with me</title>
+    <link>https://slippytrumpet.io/categories/programming/</link>
+    <description>Recent content in programming on Slippytrumpet - My blog on the technologies that have been messing with me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 04 May 2018 10:08:30 +0100</lastBuildDate>
+    
+        <atom:link href="https://slippytrumpet.io/categories/programming/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Sett, a BadgerDB abstraction</title>
+      <link>https://slippytrumpet.io/2018/05/sett-a-badgerdb-abstraction/</link>
+      <pubDate>Fri, 04 May 2018 10:08:30 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/2018/05/sett-a-badgerdb-abstraction/</guid>
+      <description>A little Go package to make BadgerDB easier (for me) to work with I&amp;rsquo;ve noticed that as an &amp;ldquo;older&amp;rdquo; developer, often, one of the first things I&amp;rsquo;ll do with a new package/API I&amp;rsquo;m using, is abstract it into just the bits I need and/or that my cognitive resources can cope with.
+The end result is often something akin to plain english (in terms of code), and while I&amp;rsquo;m not sure this says much for my cognition and memory, I do often wonder why this is not better syntax full stop?</description>
+    </item>
+    
+    <item>
+      <title>Experiments with Messaging over Ethernet Frames</title>
+      <link>https://slippytrumpet.io/2017/07/experiments-with-message-queuing-over-ethernet-frames/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/2017/07/experiments-with-message-queuing-over-ethernet-frames/</guid>
+      <description>In his article, Network Protocol Breakdown: Ethernet and Go, Matt Layher describes the Ethernet protocol and introduces a couple of libraries written in Go. I read the article with interest. Application communication, at the Ethernet frame level, a lower level than TCP sockets, was something I&amp;rsquo;d never considered before.
+Of particular interest was the &amp;ldquo;broadcast&amp;rdquo; nature of the communication. In contrast to sockets - though frames can also be addressed to specific devices - frames can be broadcast network-wide, enabling more than one device to listen and use the frame payload.</description>
+    </item>
+    
+    <item>
+      <title>Let&#39;s Encrypt and Go</title>
+      <link>https://slippytrumpet.io/2016/10/letsencrypt-and-go/</link>
+      <pubDate>Mon, 31 Oct 2016 18:43:50 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/2016/10/letsencrypt-and-go/</guid>
+      <description>Recently I implemented TLS using Let&amp;rsquo;s Encrypt for two Go applications. I thought I&amp;rsquo;d outline the process I followed and mention a couple of issues I had. Let&amp;rsquo;s Encrypt is a fabulous service. In making TLS freely accessible to the masses it&amp;rsquo;s helping make the Internet a more secure place.
+For Go applications, there&amp;rsquo;s no automatic install and renewal route, the process you follow to obtain a certificate takes you via the &amp;ldquo;standalone&amp;rdquo; option.</description>
+    </item>
+    
+  </channel>
+</rss>

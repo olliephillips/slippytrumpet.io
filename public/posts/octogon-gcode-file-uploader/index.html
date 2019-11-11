@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="description" content="A blog on the technologies that have been messing with me.">
+		<meta name="generator" content="Hugo 0.56.0-DEV-superdir" />
+		<title>Octogon G-Code File Uploader &middot; slippytrumpet.io</title>
+		<link rel="shortcut icon" href="https://slippytrumpet.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/style.css">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://slippytrumpet.io/index.xml" rel="alternate" type="application/rss+xml" title="slippytrumpet.io" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://slippytrumpet.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://slippytrumpet.io/posts'>Archive</a>
+	<a href='https://slippytrumpet.io/tags'>Tags</a>
+	<a href='https://slippytrumpet.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://slippytrumpet.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Octogon G-Code File Uploader
+                    </h1>
+                    <h2 class="headline">
+                    Dec 5, 2017 23:05
+                    · 351 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://slippytrumpet.io/tags/raspberry-pi">raspberry pi</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/golang">golang</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/gcode">gcode</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/3dprinting">3dprinting</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/octoprint">octoprint</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                <section id="post-body">
+                    
+
+<h2 id="an-automatic-file-upload-utility-for-octoprint">An automatic file upload utility for OctoPrint</h2>
+
+<p>Octogon is a simple command line utility which will monitor a single folder on your local file system for the addition/modification of <code>.stl</code> and <code>.gcode</code> extension files and automatically copy them to OctoPrint so they appear in your files list.</p>
+
+<h3 id="why">Why?</h3>
+
+<p>My 3D Printer is right next to me at the moment. But getting files onto it, configuring it, and monitoring it, are jobs that are a bit painful in this wireless age. Everything is done via the LCD control panel and SD card.</p>
+
+<p>So when I found out about <a href="http://octoprint.org/">OctoPrint</a>, a print server for 3D Printers which runs on a Raspberry Pi, I did it. I bought a Raspberry Pi and installed <a href="https://octopi.octoprint.org/">OctoPi</a>, the prebuilt Raspberry Pi image which includes OctoPrint as well as some other utilities.</p>
+
+<p>OctoPrint has been a relevation. It offers remote monitoring and control of the 3D printer over LAN - and WAN so long as you configure your router&rsquo;s firewall correctly  - so you can view, monitor, tweak and pause/stop a print job, over a wifi connection.</p>
+
+<p><a href="https://github.com/olliephillips/octogon">Octogon</a> is a simple utility written in Go. It addresses one tiny weakspot in my OctoPrint setup and workflow: the need to physically upload my G-code files via OctoPrint&rsquo;s web interface. Using Octogon, they just appear in the file list and are available for printing.</p>
+
+<p>With Octogon running. A single folder on my computer is monitored. Any new or modified <code>.gcode</code>and <code>.stl</code> files saved into that folder are copied over to OctoPrint automatically using SSH. Save a file locally, and it&rsquo;s almost immediately available on the Raspberry Pi.</p>
+
+<p>Using it is simple. In most cases the only command line option needed to run the program is the password <code>-p</code> flag.</p>
+
+<p>For example, you can start Octogon monitoring the current folder like this:</p>
+
+<pre><code>$ octogon -p sshpasswordtoraspberrypi
+</code></pre>
+
+<p><br/></p>
+
+<h3 id="download-octogon">Download Octogon</h3>
+
+<p>You can checkout the documentation and source code, as well as download compiled binaries for Linux and Mac, <a href="https://github.com/olliephillips/octogon">here</a>.</p>
+
+<p>Unfortunately the Windows build currently doesn&rsquo;t work - the file monitoring is not reliable - and I&rsquo;ll look into this in the near future.</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.github.com/olliephillips">
+        <i class="fa fa-github"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> 
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://slippytrumpet.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://slippytrumpet.io/js/main.js"></script>
+<script src="https://slippytrumpet.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

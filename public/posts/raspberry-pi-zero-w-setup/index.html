@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="description" content="A blog on the technologies that have been messing with me.">
+		<meta name="generator" content="Hugo 0.56.0-DEV-superdir" />
+		<title>Raspberry Pi Zero W &#34;headless&#34; Setup &middot; slippytrumpet.io</title>
+		<link rel="shortcut icon" href="https://slippytrumpet.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/style.css">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://slippytrumpet.io/index.xml" rel="alternate" type="application/rss+xml" title="slippytrumpet.io" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://slippytrumpet.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://slippytrumpet.io/posts'>Archive</a>
+	<a href='https://slippytrumpet.io/tags'>Tags</a>
+	<a href='https://slippytrumpet.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://slippytrumpet.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Raspberry Pi Zero W &#34;headless&#34; Setup
+                    </h1>
+                    <h2 class="headline">
+                    Mar 17, 2017 16:06
+                    · 2766 words
+                    · 13 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://slippytrumpet.io/tags/raspberry">raspberry</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/pi-zero-w">pi-zero-w</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/golang">golang</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                <section id="post-body">
+                    
+
+<p><img src="https://thingiverse-production-new.s3.amazonaws.com/renders/ee/4c/d9/f7/3d/326e57726fc5c2070bc5c19417e1814d_preview_featured.jpeg" alt="alt text" title="Pi Zero rack/stand" />
+Pictured: My Raspberry Pi Zero W stand/rack. <a href="https://www.thingiverse.com/thing:2169943">Get it on Thingiverse</a></p>
+
+<h1 id="an-end-to-end-log-of-the-set-up-process-i-followed-from-my-macbook">An end-to-end log of the set-up process I followed from my Macbook</h1>
+
+<h2 id="what-s-this-all-about">What&rsquo;s this all about?</h2>
+
+<ul>
+<li>Setting up a Raspberry Pi Zero W in a &ldquo;headless&rdquo; configuration, without a keyboard or monitor;</li>
+<li>Configuring access to multiple Wifi access points;</li>
+<li>Securing via passwordless SSH public key only login and Firewall rules configuration;</li>
+<li>Simple command line Terminal access by configuring Hostname/Hosts;</li>
+<li>Creating a custom image, which we can reuse next time we want to configure another Pi Zero W.</li>
+</ul>
+
+<p>To use the information here, you will need a Micro SD card, a full size adapter and an SD card USB drive, and of course, a Rasberry Pi Zero W.</p>
+
+<h2 id="why-raspberry-pi-zero-w">Why Raspberry Pi Zero W?</h2>
+
+<p><a href="https://www.raspberrypi.org/products/pi-zero/">Raspberry Pi Zero W</a> is a small, powerful and connected (onboard Wifi and Bluetooth) computer.  It&rsquo;s the only Raspberry Pi that&rsquo;s really caught my attention, including the original &lsquo;unconnected&rsquo; Pi Zero.</p>
+
+<p>It&rsquo;s small; not much bigger than a NodeMCU <a href="https://en.wikipedia.org/wiki/ESP8266">ESP8266</a> Wifi board, but the Pi Zero W also offers Bluetooth as well as better processor, RAM and storage resources.</p>
+
+<p>It&rsquo;s cheap; just launched but only 9GBP. It will give <a href="https://en.wikipedia.org/wiki/ESP32">ESP32</a> something to think on, a board which also has Wifi and Bluetooth, but to buy in a developer friendly form, &lsquo;currently&rsquo; costs a bit more.</p>
+
+<p>It&rsquo;s available; in the week it launched I ordered one, and I had it in my hands 2 days later. This makes it a strong contender in the space <a href="https://getchip.com/">C.H.I.P</a> has positioned for itself, which, though arguably a better board with 4GB of onboard storage, is in very short supply.</p>
+
+<p>It runs Linux; so, much of the stuff I do day-to-day is portable to the Pi Zero W.</p>
+
+<p>It runs Go; Go compiles for lots of platforms, but STM32 architectures are not supported - the binaries are too big. So I can&rsquo;t use Go on ESP8266 boards, and I have no clue about programming in C. Fortunately for me, Go cross compiles to the Pi Zero W ARM architecture, just fine.</p>
+
+<h2 id="going-headless">Going &ldquo;headless&rdquo;</h2>
+
+<p>I&rsquo;m shooting for a &ldquo;headless&rdquo; setup. No screen and no monitor or other peripherals. I want to access my Pi Zero W like I do servers - over SSH.</p>
+
+<p>You can connect a monitor and keyboard initially to configure everything, but since I don&rsquo;t have either spare, I&rsquo;m doing it without.</p>
+
+<p>I&rsquo;m on a Mac, so this log is Mac focussed. It would be easier on Linux - as you&rsquo;ll see :)</p>
+
+<h2 id="we-shoud-start">We shoud start!</h2>
+
+<p>What follows is my set-up process, end to end. You should be able to follow it verbatim.</p>
+
+<p>I didn&rsquo;t know some of this information initially, I used a couple of web resources myself in piecing it together. I&rsquo;ve provided links to these resources where relevant.</p>
+
+<h3 id="step-1-download-raspbian-linux-image-and-make-a-bootable-micro-sd-card">Step 1. Download Raspbian Linux image and make a bootable Micro SD card</h3>
+
+<p>We need a blank Micro SD card and adapter. And 8GB card seems to be the minimum requirement.</p>
+
+<p>For a headless configuration we don&rsquo;t need the Pixel GUI/desktop that bundles with the full image, so we can grab the smaller &lsquo;lite&rsquo; image. At time of writing latest was &lsquo;Jessie&rsquo;.</p>
+
+<p><a href="https://www.raspberrypi.org/downloads/raspbian/">Download it here</a></p>
+
+<p>Run this command in Terminal, prefix with <code>sudo</code> if you need to:</p>
+
+<pre><code>diskutil list
+</code></pre>
+
+<p><br/>
+Note the lines in the output like these:</p>
+
+<pre><code>/dev/disk0 (internal, physical):
+/dev/disk1 (internal, virtual):
+</code></pre>
+
+<p><br/>
+Plug the Micro SD card into the adapter and insert it into your SD card slot. Run the same command again. You should see an additional line in the output:</p>
+
+<pre><code>/dev/disk0 (internal, physical):
+/dev/disk1 (internal, virtual):
+/dev/disk2 (internal, physical):
+</code></pre>
+
+<p><br/>
+The additional line is your Micro SD card.</p>
+
+<p>Next, we&rsquo;ll unmount it, ready for flashing.</p>
+
+<pre><code>sudo diskutil unmountdisk /dev/disk2
+</code></pre>
+
+<p><br/>
+In Terminal, change directory to where you have the downloaded Raspbian Jessie Lite image, which for me was Downloads:</p>
+
+<pre><code>cd ~/Downloads
+</code></pre>
+
+<p><br/>
+Use the <code>dd</code> command to copy the image to the Micro SD card. Note our use of <code>rdisk2</code> rather than <code>disk2</code>. This means &lsquo;raw disk&rsquo; and is supposed to be faster.</p>
+
+<pre><code>sudo dd bs=1m if=2017-03-02-raspbian-jessie-lite.img of=/dev/rdisk2
+</code></pre>
+
+<p><br/>
+You&rsquo;ll loose your Terminal prompt. Wait for the process to complete.</p>
+
+<p>We now have a bootable Micro SD card.</p>
+
+<p>We could stick it in the Pi Zero W and boot it right away, but this wouldn&rsquo;t do us much good. With no keyboard or monitor, nor any network connectivity we can&rsquo;t interact with it yet.</p>
+
+<p><strong>EDIT: 05/12/2017.</strong> There are a couple of useful comments at the bottom of this post which suggest the process I describe next, including the need to create a virtual machine later on, can be simplified in general, and especially for Mac users on later versions of OS X. I haven&rsquo;t had the opportunity to try for myself, but I&rsquo;d encourage you to check that information out also.</p>
+
+<h3 id="step-2-access-the-raspbian-linux-image-to-edit-files">Step 2. Access the Raspbian Linux image to edit files</h3>
+
+<p>The Raspbian image comprises two sub-partitions; a boot partition which is formatted as FAT32 and the file system partition, of type LINUX.</p>
+
+<p>If we mount and inspect the SD card in our Mac&rsquo;s Finder, we can only access the BOOT sub-partition. The LINUX filesystem partition is EXT4 format and our Mac Finder can&rsquo;t see/use it.</p>
+
+<p>We can&rsquo;t mount the sub-partition in Terminal either on Mac, so we need to use Linux.</p>
+
+<p>A virtual machine is convenient here.</p>
+
+<p>On Mac, an easy way to create a Linux virtual machine is via <a href="https://www.vagrantup.com/">Vagrant</a> and <a href="https://www.virtualbox.org/">VirtualBox</a>, and <a href="https://www.jeffgeerling.com/blogs/jeff-geerling/mounting-raspberry-pis-ext4-sd">I mostly used this guide, by Jeff Geerling</a> for this part of the process.</p>
+
+<p><a href="https://www.vagrantup.com/downloads.html">Install Vagrant</a>, which will install the VirtualBox dependency.</p>
+
+<p>Grab a recent Ubuntu Linux image using <code>vagrant init</code> and start the virtual machine.</p>
+
+<pre><code>vagrant init bento/ubuntu-16.04
+vagrant up
+</code></pre>
+
+<p><br/>
+Suspend it.</p>
+
+<pre><code>vagrant suspend
+</code></pre>
+
+<p><br/>
+Launch VirtualBox, find the virtual machine and discard the saved state (via the right click option). We need to do this so that we can enable USB.</p>
+
+<p>Right click again and select &lsquo;Settings&rsquo;. Choose &lsquo;Ports&rsquo; and &lsquo;USB&rsquo; then check &lsquo;Enable USB Controller&rsquo;.</p>
+
+<p>Plug the USB SD flash drive into one of the USB ports. Insert the Micro SD card (with the adapter if required) into the USB SD flash drive.</p>
+
+<p>Check in Mac Finder that the card has not been mounted. If it has, unmount it.</p>
+
+<p>Start the virtual machine from within VirtualBox and login as the <code>vagrant</code> user:</p>
+
+<pre><code>vagrant login: vagrant
+Password: vagrant
+</code></pre>
+
+<p><br/>
+Click the USB option in the virtual machine window and select the USB Mass Storage device, which represents the USB SD flash drive/Micro SD card to give the virtual machine access to this drive.</p>
+
+<p>If it is not selectable, double check in Finder that it has not been mounted.</p>
+
+<p>Key the following in the virtual machine&rsquo;s Terminal prompt.</p>
+
+<pre><code>sudo fdisk -l
+</code></pre>
+
+<p><br/>
+This should identify both sub-partitions on the Micro SD card.</p>
+
+<pre><code>Device          Type
+/dev/sdb1       Win95 FAT32 (LBA)
+/dev/sdb2       Linux
+</code></pre>
+
+<p><br/>
+Mount the Linux sub-partition and change into this directory.</p>
+
+<pre><code>sudo mount /dev/sdb2 /media/usb
+cd /media/usb
+</code></pre>
+
+<p><br/>
+We now have access and can edit files.</p>
+
+<h3 id="step-3-edit-files-to-pre-configure-wifi">Step 3. Edit files to pre-configure Wifi</h3>
+
+<p>The next step is to configure Wifi, so that when booted our Pi Zero W will connect to a network.</p>
+
+<p>I typically operate between two Wifi access points, so I have set up both in the configuration below.</p>
+
+<p>Maybe you only need to connect to one access point? I&rsquo;d still recommend the configuration below, since it&rsquo;s extensible - there if/when you need it.</p>
+
+<pre><code>sudo nano etc/wpa_supplicant/wpa_supplicant.conf 
+## Note no preceding &quot;/&quot;. 
+## Want to edit file on image not the virtual machine
+</code></pre>
+
+<p><br/>
+I&rsquo;m working between two access points so configured <code>wpa_supplicant.conf</code> like this.</p>
+
+<pre><code>country=GB
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+    ssid=&quot;SSID_OF_NETWORK_1&quot;
+    psk=&quot;password&quot;
+    id_str=&quot;home&quot;
+}
+
+network={
+    ssid=&quot;SSID_OF_NETWORK_2&quot;
+    psk=&quot;password&quot;
+    id_str=&quot;work&quot;
+}
+</code></pre>
+
+<p><br/>
+Key <code>Ctrl+x</code> to  confirm and save.</p>
+
+<p>We need to make amendments to <code>etc/network/interfaces</code> also.</p>
+
+<pre><code>sudo nano etc/network/interfaces
+</code></pre>
+
+<p><br/>
+The defaults in here need to be amended for multiple access points and roaming between them.</p>
+
+<p>Again this is my configuration, but a redundant config for a second unused access point should not hurt you - and you may need it later.</p>
+
+<pre><code>source-directory /etc/network/interfaces.d
+
+auto lo
+iface lo inet loopback
+
+iface eth0 inet manual
+
+allow-hotplug wlan0
+iface wlan0 inet manual
+    wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+
+allow-hotplug wlan1
+iface wlan1 inet manual
+    wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+
+iface home inet dhcp
+iface work inet dhcp
+</code></pre>
+
+<p><br/>
+Save the file.</p>
+
+<p>Unmount the Micro SD card in the SD card flash drive.</p>
+
+<pre><code>cd ../../
+sudo umount /media/usb
+</code></pre>
+
+<p><br/>
+Next, we need to make a single amend to the first boot partition of the Micro SD card, since by default the SSH service is not enabled on Pi Zero.</p>
+
+<p>So we&rsquo;ll create an empty file named <code>SSH</code> with no extension. This is deleted at first boot, but SSH is subsequently enabled.</p>
+
+<pre><code>sudo mount /dev/sdb1 /media/usb
+cd /media/usb
+sudo touch SSH
+cd ../../
+sudo umount /media/usb
+</code></pre>
+
+<p><br/>
+Insert the Micro SD card into your Pi Zero W and power it up. If all went well you&rsquo;ll connect to an access point. If you configured a second access point, when you go to your second location you&rsquo;ll automatically connect to that access point too.</p>
+
+<p>Hopefully, it should be evident how to add a third access point (or more) if needed.</p>
+
+<h3 id="step-4-configure-passwordless-login-over-ssh">Step 4. Configure passwordless login over SSH</h3>
+
+<p>Now we have networking we can connect to the Pi Zero W itself over SSH.</p>
+
+<p>You can find the IP address of the Pi Zero W by logging into your router and looking at the list of attached devices.</p>
+
+<p>Alternatively, many routers with DHCP allocate an IP and expose the Pi Zero on the hostname <code>raspberrypi.local</code></p>
+
+<p>In Terminal, let&rsquo;s try connect to it.</p>
+
+<p>The default user is <code>pi</code> the default password is <code>raspberry</code></p>
+
+<pre><code>ssh pi@raspberrypi.local // or ip address
+password: raspberry
+</code></pre>
+
+<p><br/>
+Default passwords are never good. Let&rsquo;s sort, for both the <code>root</code> and <code>pi</code> users, by changing them.</p>
+
+<pre><code>sudo passwd root
+Enter new UNIX password: verylongpasswdyoucannotsee
+passwd: password updated successfully
+
+passwd
+(current) UNIX password: raspberry
+Enter new UNIX password: verylongpasswdyoucannotsee
+passwd: password updated successfully
+</code></pre>
+
+<p><br/>
+Update and upgrade Raspbian, this takes a few minutes to complete. Hit <code>y</code> in response to any prompts.</p>
+
+<pre><code>sudo apt-get update
+sudo apt-get upgrade
+</code></pre>
+
+<p><br>
+Next we&rsquo;re going to set up SSH passwordless login. This is done by transferring our public key from our Mac to a special location on the Pi Zero W.</p>
+
+<p>If you&rsquo;re a developer, it&rsquo;s very likely you&rsquo;ll have a private/public key pair already on your Mac, but if not, <a href="https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-mac-os-x">you&rsquo;ll need to create one</a>.</p>
+
+<p>On your Pi Zero W create the following folder in your home directory.
+<br/>
+Then set the permissions.</p>
+
+<pre><code>mkdir /home/pi/.ssh
+chmod 700 /home/pi/.ssh
+</code></pre>
+
+<p><br/>
+Create the <code>authorized_keys</code> file, and copy over your public key. You need to copy the contents of <code>~/.ssh/id_rsa.pub</code> into this file.
+<br/>
+Then set the permissions.</p>
+
+<pre><code>nano /home/pi/.ssh/authorized_keys
+chmod 400 /home/pi/.ssh/authorized_keys
+chown -R pi:pi /home/pi
+</code></pre>
+
+<p><br/>
+Open a new Terminal window - !! do not close the current window !!</p>
+
+<p>Attempt to connect.</p>
+
+<pre><code>ssh pi@raspberrypi.local
+</code></pre>
+
+<p><br/>
+This time we should log straight in to our Pi Zero W without being prompted for a password.</p>
+
+<p>Finally, we will increase security by disabling all SSH password logins, the root user login, and restricting use of the SSH service to only the user <code>pi</code>.</p>
+
+<pre><code>sudo nano /etc/ssh/sshd_config
+</code></pre>
+
+<p><br/>
+Add, or amend, the following lines in this file.</p>
+
+<pre><code>PermitRootLogin no
+PasswordAuthentication no
+AllowUsers pi
+</code></pre>
+
+<p><br/>
+Restart the SSH service with <code>sudo service ssh restart</code>.</p>
+
+<h3 id="step-5-configure-a-firewall">Step 5. Configure a Firewall</h3>
+
+<p>Last step was a bit intense. Step 5 is nice and easy. We&rsquo;re going to install and set up a Firewall, through which we can block port access to our Pi Zero W.</p>
+
+<p>We&rsquo;re going to install and use UFW (Uncomplicated Firewall). This application provides a super easy abstraction to iptables, an application which, personally speaking, I&rsquo;ve often struggled with.</p>
+
+<pre><code>sudo apt-get install ufw
+</code></pre>
+
+<p><br/>
+Now we need to set some rules.</p>
+
+<p>I&rsquo;ll probably use my Pi Zero W as a webserver, maybe also as a client to consume API services, so I need HTTP and HTTPS, so I need to open ports 80 and 443.</p>
+
+<p>I also use <a href="https://sendgrid.com/">Sendgrid</a> to relay server email, and that works on port 587.</p>
+
+<p>Obviously I&rsquo;ll be using SSH to login in, and by default that uses port 22.</p>
+
+<pre><code>sudo ufw default deny incoming
+sudo ufw allow 80
+sudo ufw allow 443 
+sudo ufw allow 587
+sudo ufw allow 22
+</code></pre>
+
+<p><br/>
+Now, start UFW then check the configuration.</p>
+
+<pre><code>sudo ufw enable
+sudo ufw status
+
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22                         ALLOW       Anywhere
+80                         ALLOW       Anywhere
+443                        ALLOW       Anywhere
+587                        ALLOW       Anywhere
+22                         ALLOW       Anywhere (v6)
+80                         ALLOW       Anywhere (v6)
+443                        ALLOW       Anywhere (v6)
+587                        ALLOW       Anywhere (v6)
+</code></pre>
+
+<p><br>
+We&rsquo;re firewalled. Feels good yes?
+<br/>
+At this point our setup is fairly robust. I think so anyway.
+<br/>
+But we can do more to make using Pi Zero W a lovely experience.</p>
+
+<h3 id="step-6-hostname-configuration">Step 6. Hostname configuration</h3>
+
+<p>I bet you, like me, have more than one Raspberry Pi Zero W - or will have soon!</p>
+
+<p>They&rsquo;re handy things, and cheap.</p>
+
+<p>But, if we&rsquo;re going to use more than one Pi Zero W on the same Wifi network, we have a small problem.</p>
+
+<p>Unless we want to keep identifying them by IP address, which means checking the router&rsquo;s attached device list, we need a way to tell them apart, as, by default, they all have the hostname of <code>raspberrypi</code>, addressed as <code>raspberrypi.local</code> over SSH.</p>
+
+<p>This is not useful. So let&rsquo;s change it - it&rsquo;s simple.</p>
+
+<pre><code>sudo nano /etc/hostname
+</code></pre>
+
+<p><br/></p>
+
+<p>Replace the <code>raspberrypi</code> value in this file with the name you want. There are restrictions on what <code>hostname</code> can be, but I name/number mine like this.</p>
+
+<pre><code>pizero1
+</code></pre>
+
+<p><br/>
+Confirm and save.</p>
+
+<p>Next edit this file.</p>
+
+<pre><code>sudo nano /etc/hosts
+</code></pre>
+
+<p><br/>
+Change the last line to match the entry you placed in the <code>/etc/hostname</code> file.</p>
+
+<pre><code>127.0.1.1       pizero1
+</code></pre>
+
+<p><br/>
+Repeat for all your pi zero w boards, and each will be separately identifiable and addressable on your Wifi network.</p>
+
+<p>For example..</p>
+
+<pre><code>ssh pi@pizero1.local
+ssh pi@pizero2.local
+ssh pi@pizero3.local
+</code></pre>
+
+<p><br/>
+We&rsquo;re done.</p>
+
+<h3 id="step-6-creating-an-image-of-your-work">Step 6. Creating an image of your work</h3>
+
+<p>We can&rsquo;t go through this long process - as much fun as it was :/ - every time we want to configure a new Raspberry Pi Zero W, so in this final step we&rsquo;re going to create an image file of everything we&rsquo;ve done so far.</p>
+
+<p>This image will give us a snapshot of the Operating System and File System, exactly as it is now. One that we can use, in place of the default Raspbian image, when we get another Pi Zero W and need an OS for it.</p>
+
+<p>With an image, our next setup will just comprise of two simple steps!.</p>
+
+<p>1) We&rsquo;ll just need to copy the image to a new Micro SD card as we did in Step 1, and then;</p>
+
+<p>2) log in, and change the hostname just like we did in Step 5.</p>
+
+<p>Everything else including Wifi, SSH passwordless login and Firewall will be preconfigured out-the-box</p>
+
+<p>To create the image we use the <code>DD</code> command from the Mac Terminal application. We unmount the Micro SD card first.</p>
+
+<pre><code>sudo diskutil unmountdisk /dev/disk2
+sudo dd bs=1m if=/dev/rdisk2 of=pi/060317.img
+</code></pre>
+
+<p><br/>
+This creates the image file <code>060317.img</code> in the folder <code>pi</code> relative to the our current working directory.</p>
+
+<p>To copy this image to a new Micro SD card for use in another Pi Zero W, we use the <code>DD</code> command again and simply reverse the parameters such that the source is <code>pi/060317.img</code> and the destination <code>/dev/rdisk2</code>.</p>
+
+<pre><code>sudo diskutil unmountdisk /dev/disk2
+sudo dd bs=1m if=pi/060317.img of=/dev/rdisk2 
+</code></pre>
+
+<p><br/>
+That&rsquo;s it! We&rsquo;re all done!</p>
+
+<p>Configuring a Raspberry Pi Zero W from this image is now effortless.</p>
+
+<h3 id="potential-stumbling-blocks">Potential stumbling blocks</h3>
+
+<p>I&rsquo;ve worked back through this process a couple of times now. I&rsquo;ve had a few issues, which I&rsquo;ve listed here as a heads up.</p>
+
+<ul>
+<li><p>Unmounting. If you get an unexpected error. Double check the Micro SD card is available, unmounted.</p></li>
+
+<li><p>SD Cards of same size. Turns out they are not always. So a 32GB image written back, to a new 32GB card might not always fit. I&rsquo;ve seen this with a cheap 32GB Micro SD card</p></li>
+
+<li><p>SD cards of different sizes. Apparently you <a href="http://raspberrypi.stackexchange.com/questions/1058/is-this-an-ok-way-to-transfer-my-16gb-sd-card-to-an-8gb-sd-card-simple-dd?rq=1">can write an image taken from a 32GB card back to a 16GB card, or a 16GB to an 8GB</a>. The data of the pi image is much less than 8GB. You can also do it the other way round, but by default you lose access to the additional space outside the image. Use <code>sudo rasp-config</code> to expand the root partition to reclaim this space.</p></li>
+
+<li><p>Imaging takes a while. Unless you really need lots of space, working with 8GB cards is quick, consistent and cheap!</p></li>
+
+<li><p>SSH known hosts. You might be prompted that an entry exists which doesn&rsquo;t match the new entry if you&rsquo;re SSHing to a new Pi Zero W. Just follow the filepath and delete the line. It will then work fine.</p></li>
+</ul>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.github.com/olliephillips">
+        <i class="fa fa-github"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> 
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://slippytrumpet.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://slippytrumpet.io/js/main.js"></script>
+<script src="https://slippytrumpet.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

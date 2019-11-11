@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        Running your Application as a Service on Pi Zero W - Slippytrumpet - My blog on the technologies that have been messing with me
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="Daemonize your application so that it&#39;s easily started, stopped and resilient to crashes" />
+  <meta name="generator" content="Hugo 0.56.0-DEV-superdir with theme pure" />
+  <title>Running your Application as a Service on Pi Zero W - Slippytrumpet - My blog on the technologies that have been messing with me</title>
+  
+
+  <link rel="stylesheet" href="https://slippytrumpet.io/css/style.css">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css">
+  <meta property="og:title" content="Running your Application as a Service on Pi Zero W" />
+<meta property="og:description" content="Daemonize your application so that it&#39;s easily started, stopped and resilient to crashes" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://slippytrumpet.io/2017/06/running-your-app-as-service-on-pi-zero-w/" />
+<meta property="article:published_time" content="2017-06-08T10:27:15+01:00" />
+<meta property="article:modified_time" content="2017-06-08T10:27:15+01:00" />
+<meta itemprop="name" content="Running your Application as a Service on Pi Zero W">
+<meta itemprop="description" content="Daemonize your application so that it&#39;s easily started, stopped and resilient to crashes">
+
+
+<meta itemprop="datePublished" content="2017-06-08T10:27:15&#43;01:00" />
+<meta itemprop="dateModified" content="2017-06-08T10:27:15&#43;01:00" />
+<meta itemprop="wordCount" content="702">
+
+
+
+<meta itemprop="keywords" content="raspberry,pi-zero-w,golang,daemon,systemd,linux," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Running your Application as a Service on Pi Zero W"/>
+<meta name="twitter:description" content="Daemonize your application so that it&#39;s easily started, stopped and resilient to crashes"/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+  <body class="main-center" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/olliephillips" target="_blank">
+            <img class="img-circle img-rotate" src="https://slippytrumpet.io/images/ItsMe2.jpg" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Ollie Phillips</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Software Developer, Accountant</h3>
+          <p style="font-size:12px;" class="hidden-xs hidden-sm hidden-md">This is my Blog on the technologies that have been messing with me</p>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Cheshire, UK</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul fclass="category-list" style="font-size:12px;text-transform:uppercase">
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/3d-printing/" class="category-list-link">3d-printing</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/iot/" class="category-list-link">iot</a><span class="category-list-count">6</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/linux/" class="category-list-link">linux</a><span class="category-list-count">2</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/opinion/" class="category-list-link">opinion</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/programming/" class="category-list-link">programming</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/web-development/" class="category-list-link">web-development</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul  style="font-size:12px;text-transform:uppercase">
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/3dprinting/" class="tag-list-link">3dprinting</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/badgerdb/" class="tag-list-link">badgerdb</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/daemon/" class="tag-list-link">daemon</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/databases/" class="tag-list-link">databases</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/drones/" class="tag-list-link">drones</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/efmq/" class="tag-list-link">efmq</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/esp8266/" class="tag-list-link">esp8266</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/espruino/" class="tag-list-link">espruino</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/ethernet/" class="tag-list-link">ethernet</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/gcode/" class="tag-list-link">gcode</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/golang/" class="tag-list-link">golang</a><span
+                    class="tag-list-count">6</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/html5/" class="tag-list-link">html5</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/iot/" class="tag-list-link">iot</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/javscript/" class="tag-list-link">javscript</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/lan/" class="tag-list-link">lan</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/letsencrypt/" class="tag-list-link">letsencrypt</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/linux/" class="tag-list-link">linux</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/mk2/" class="tag-list-link">mk2</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/mqtt/" class="tag-list-link">mqtt</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/multirotor/" class="tag-list-link">multirotor</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/nodemcu/" class="tag-list-link">nodemcu</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/octoprint/" class="tag-list-link">octoprint</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/pi-zero-w/" class="tag-list-link">pi-zero-w</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/prusa-original/" class="tag-list-link">prusa-original</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/puckjs/" class="tag-list-link">puckjs</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/quadcopter/" class="tag-list-link">quadcopter</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/raspberry/" class="tag-list-link">raspberry</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/raspberry-pi/" class="tag-list-link">raspberry-pi</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/raspberrypi/" class="tag-list-link">raspberrypi</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/remote-control/" class="tag-list-link">remote-control</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/rethinkdb/" class="tag-list-link">rethinkdb</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/riotjs/" class="tag-list-link">riotjs</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/startups/" class="tag-list-link">startups</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/systemd/" class="tag-list-link">systemd</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/tls/" class="tag-list-link">tls</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/webbluetooth/" class="tag-list-link">webbluetooth</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/websockets/" class="tag-list-link">websockets</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+  </div>
+</aside>
+
+    
+    
+  <aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+    <div class="slimContent">
+      <nav id="toc" class="article-toc">
+        <h3 class="toc-title">Catalogue</h3>
+        <div class="toc-content always-active"><nav id="TableOfContents">
+<ul>
+<li><a href="#daemonize-your-application-so-that-it-is-easily-started-stopped-and-resilient-to-crashes">Daemonize your application so that it is easily started, stopped and resilient to crashes</a>
+<ul>
+<li><a href="#how-to-daemonize">How to daemonize?</a>
+<ul>
+<li><a href="#systemd">systemd</a></li>
+</ul></li>
+<li><a href="#step-1-create-a-systemd-configuration-file-for-your-program">Step 1 - Create a systemd configuration file for your program</a></li>
+<li><a href="#step-2-enable-the-config-file">Step 2 - Enable the config file</a></li>
+</ul></li>
+</ul>
+</nav>
+        </div>
+      </nav>
+    </div>
+  </aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2017/06/running-your-app-as-service-on-pi-zero-w/"
+    >Running your Application as a Service on Pi Zero W</a
+  >
+</h1>
+<br/>
+
+      <div class="article-meta">
+        <span class="article-date">
+  <i class="icon icon-calendar-check"></i>
+<a href="https://slippytrumpet.io/2017/06/running-your-app-as-service-on-pi-zero-w/" class="article-date">
+  <time datetime="2017-06-08 10:27:15 &#43;0100 BST" itemprop="datePublished">8 June 2017</time>
+</a>
+</span><span class="article-category">
+  <i class="icon icon-folder"></i>
+  <a class="article-category-link" href="/categories/iot/"> IoT </a>
+  <a class="article-category-link" href="/categories/linux/"> linux </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+    <a class="article-tag-link" href="/tags/raspberry/"> raspberry </a>
+    <a class="article-tag-link" href="/tags/pi-zero-w/"> pi-zero-w </a>
+    <a class="article-tag-link" href="/tags/golang/"> golang </a>
+    <a class="article-tag-link" href="/tags/daemon/"> daemon </a>
+    <a class="article-tag-link" href="/tags/systemd/"> systemd </a>
+    <a class="article-tag-link" href="/tags/linux/"> linux </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/06/running-your-app-as-service-on-pi-zero-w/#comments"
+            class="article-comment-link">Comments</a></span>
+<div>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 702 words.</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 4 minutes </span>
+</div>
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+
+<h1 id="daemonize-your-application-so-that-it-is-easily-started-stopped-and-resilient-to-crashes">Daemonize your application so that it is easily started, stopped and resilient to crashes</h1>
+
+<p>So you&rsquo;ve got your headless Raspberry Pi Zero W all set up and you&rsquo;ve been running applications you&rsquo;ve written for yourself on it? I have, I&rsquo;m using Go with a combination of <a href="http://embd.kidoman.io/">Embd</a> and <a href="https://periph.io/">Periph.io</a> libraries to interact with the hardware on the Pi Zero W itself and external to it.</p>
+
+<p>But it feels clunky.</p>
+
+<p>Running &ldquo;headless&rdquo;, with no screen or keyboard, everytime I boot the device I need to SSH to it and kick off the application from the command line.</p>
+
+<p>One of the apps I have monitors temperature using Onewire and two DS18B20 temperature probes. To have to SSH to the Pi Zero W to run the program that does this, is inconvenient: I need access to a computer with a Terminal, and the Pi Zero W must be accessible over the network via SSH. This won&rsquo;t always be possible.</p>
+
+<p>Much better would be for me to simply switch on the Pi Zero W and have the program run automatically. Plug and Play.</p>
+
+<p>We can do this, and more, by running the program as a service, often referred to as &ldquo;daemonizing&rdquo;.</p>
+
+<h2 id="how-to-daemonize">How to daemonize?</h2>
+
+<p>There are <a href="https://github.com/sevlyar/go-daemon">Go packages that you can include in your codebase to emulate running as a service</a>, and whilst I looked into these, this post does not cover them, for there is a simpler way, one which is useful for a program written in any language, not just Go.</p>
+
+<h3 id="systemd">systemd</h3>
+
+<p>systemd is a service manager for Linux which ships with Raspbian, so it&rsquo;s already installed on your Pi Zero W and allows us to easilly daemonize our application.</p>
+
+<p>Running the application as a service has several benefits.</p>
+
+<p>1) We can start, stop and ascertain the status of our application service with simple commands.</p>
+
+<p>2) systemd will monitor and restart the service in the event our program crashes, so our application is more robust to unforseen errors and bugs.</p>
+
+<p>3) systemd will start the application for us once our Raspberry Pi W has booted - subject to a few constraints - so we&rsquo;ll no longer need to SSH to the device to kickstart the program.</p>
+
+<p>Certainly sounds like the way to go!</p>
+
+<h2 id="step-1-create-a-systemd-configuration-file-for-your-program">Step 1 - Create a systemd configuration file for your program</h2>
+
+<p>systemd needs to know a few things about your application, so you need to give it a configuration file which provides the information required.</p>
+
+<p>Configuration files have the <code>.service</code> extension and are stored in this location on your Pi Zero W <code>/etc/systemd/system/</code></p>
+
+<p>Change directory to <code>/etc/systemd/system</code> and use <code>sudo nano</code> to create a new file, with the <code>.service</code> extension. For example I have <code>tempmon.service</code>.</p>
+
+<p>In this file you need to add a few directives. This is my <code>tempmon.service</code> file, simply amend to suit your application.</p>
+
+<pre><code>## tempmon.service
+
+[Unit]
+Description=Temperature Monitor
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/slippytrumpet
+ExecStart=/home/slippytrumpet/tempmon
+Restart=on-failure
+StartLimitIntervalSec=1800
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p><br/>
+The directives, for the most part, need no explanation, but a couple bear comment.</p>
+
+<p><code>After=network.target</code>, means systemd will run the program once networking is available.</p>
+
+<p><code>User=root</code>, sets the user that the process is to be run as. Since my temperature monitoring application is interfacing with hardware on the Pi Zero W, it needs root privileges.</p>
+
+<p><code>StartLimitIntervalSec=1800</code>, by default the application will be restarted if it crashes, but if it crashes more than the default of 5 times, there will be a pause of 1800 seconds (30 minutes) before systemd attempts to start it again.</p>
+
+<p>The MAN file for systemd contains all the directives which can be used and <a href="https://www.freedesktop.org/software/systemd/man/systemd.directives.html">you can find an online version of that, here</a>.</p>
+
+<h2 id="step-2-enable-the-config-file">Step 2 - Enable the config file</h2>
+
+<p>To enable your new config file, so that systemd daemonizes your program, use this command (substituting the name of your file in place of <code>tempmon</code>):</p>
+
+<pre><code>sudo systemctl enable tempmon
+</code></pre>
+
+<p><br/>
+If you edit the file once enabled you will need to reload it with this command:</p>
+
+<pre><code>sudo systemctl daemon-reload
+</code></pre>
+
+<p><br/>
+Now if you reboot your Pi Zero W, your program will be started by systemd. You can check it&rsquo;s status with the command:</p>
+
+<pre><code>sudo service tempmon status
+</code></pre>
+
+<p><br/>
+And, you can stop and start the program just like any other Linux service:</p>
+
+<pre><code>sudo service tempmon stop
+sudo service tempmon start
+</code></pre>
+
+    </div>
+  </article>
+<section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://slippytrumpet.io/2017/05/3d-printing-learnings-shared/" title="3D Printing. Learnings shared"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+            </li>
+            <li class="next">
+                <a href="https://slippytrumpet.io/2017/07/experiments-with-message-queuing-over-ethernet-frames/"
+                    title="Experiments with Messaging over Ethernet Frames"><span>Older&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="facebook,twitter,linkedin"
+                data-mobile-sites="facebook,twitter,linkedin"></div>
+        </div>
+    </div>
+</nav>
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/olliephillips" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://slippytrumpet.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+
+  <div class="copyright">
+    &copy;2015  -
+    2019
+  
+    <div class="publishby">
+        Theme courtesy of <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a> derived from <a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> Pure</a>.
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+   window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/rust.min.js"></script>
+<script type="text/javascript"
+   src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script>
+hljs.configure({
+  tabReplace: '    ', 
+  classPrefix: ''     
+                      
+})
+hljs.initHighlightingOnLoad();
+</script>
+<script type="text/javascript" src="https://slippytrumpet.io/js/application.js"></script>
+<script type="text/javascript" src="https://slippytrumpet.io/js/plugin.js"></script>
+<script>
+      (function (window) {
+          var INSIGHT_CONFIG = {
+              TRANSLATION: {
+                  POSTS: 'Posts',
+                  PAGES: 'Pages',
+                  CATEGORIES: 'Categories',
+                  TAGS: 'Tags',
+                  UNTITLED: '(Untitled)',
+              },
+              ROOT_URL: 'https:\/\/slippytrumpet.io\/',
+              CONTENT_URL: 'https:\/\/slippytrumpet.io\/searchindex.json ',
+          };
+          window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+      })(window);
+      </script>
+<script type="text/javascript" src="https://slippytrumpet.io/js/insight.js"></script>
+
+<script defer>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/slippytrumpet.io\/2017\/06\/running-your-app-as-service-on-pi-zero-w\/';
+        this.page.identifier = 'slippytrumpet';
+    };
+    (function () {
+        var d = document, s = d.createElement('script');
+        s.src = '//' + 'slippytrumpet' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-83287802-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

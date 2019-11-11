@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>javscript on Slippytrumpet - My blog on the technologies that have been messing with me</title>
+    <link>https://slippytrumpet.io/tags/javscript/</link>
+    <description>Recent content in javscript on Slippytrumpet - My blog on the technologies that have been messing with me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 07 Apr 2017 12:36:46 +0100</lastBuildDate>
+    
+        <atom:link href="https://slippytrumpet.io/tags/javscript/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Web Bluetooth to MQTT Gateway with Puck.js</title>
+      <link>https://slippytrumpet.io/2017/04/webbluetooth-to-mqtt-gateway/</link>
+      <pubDate>Fri, 07 Apr 2017 12:36:46 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/2017/04/webbluetooth-to-mqtt-gateway/</guid>
+      <description>If you read A little bit of Web Bluetooth you&amp;rsquo;ll know a bit about Puck.js and the new Web Bluetooth API already. But what, aside from building a gimmicky two factor authentication system, can you do with it? I had some ideas.
+What about an interface through which you can program multiple Pucks at the same time? The Web IDE allows you to connect and program one Puck at a time.</description>
+    </item>
+    
+  </channel>
+</rss>

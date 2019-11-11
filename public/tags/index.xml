@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Slippytrumpet - My blog on the technologies that have been messing with me</title>
+    <link>https://slippytrumpet.io/tags/</link>
+    <description>Recent content in Tags on Slippytrumpet - My blog on the technologies that have been messing with me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 04 May 2018 10:08:30 +0100</lastBuildDate>
+    
+        <atom:link href="https://slippytrumpet.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>badgerdb</title>
+      <link>https://slippytrumpet.io/tags/badgerdb/</link>
+      <pubDate>Fri, 04 May 2018 10:08:30 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/badgerdb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>https://slippytrumpet.io/tags/golang/</link>
+      <pubDate>Fri, 04 May 2018 10:08:30 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>3dprinting</title>
+      <link>https://slippytrumpet.io/tags/3dprinting/</link>
+      <pubDate>Tue, 05 Dec 2017 23:05:39 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/3dprinting/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gcode</title>
+      <link>https://slippytrumpet.io/tags/gcode/</link>
+      <pubDate>Tue, 05 Dec 2017 23:05:39 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/gcode/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>octoprint</title>
+      <link>https://slippytrumpet.io/tags/octoprint/</link>
+      <pubDate>Tue, 05 Dec 2017 23:05:39 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/octoprint/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>raspberry pi</title>
+      <link>https://slippytrumpet.io/tags/raspberry-pi/</link>
+      <pubDate>Tue, 05 Dec 2017 23:05:39 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/raspberry-pi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>drones</title>
+      <link>https://slippytrumpet.io/tags/drones/</link>
+      <pubDate>Thu, 30 Nov 2017 21:34:28 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/drones/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>multirotor</title>
+      <link>https://slippytrumpet.io/tags/multirotor/</link>
+      <pubDate>Thu, 30 Nov 2017 21:34:28 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/multirotor/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>quadcopter</title>
+      <link>https://slippytrumpet.io/tags/quadcopter/</link>
+      <pubDate>Thu, 30 Nov 2017 21:34:28 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/quadcopter/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>remote control</title>
+      <link>https://slippytrumpet.io/tags/remote-control/</link>
+      <pubDate>Thu, 30 Nov 2017 21:34:28 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/remote-control/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>efmq</title>
+      <link>https://slippytrumpet.io/tags/efmq/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/efmq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ethernet</title>
+      <link>https://slippytrumpet.io/tags/ethernet/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/ethernet/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>iot</title>
+      <link>https://slippytrumpet.io/tags/iot/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/iot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>lan</title>
+      <link>https://slippytrumpet.io/tags/lan/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/lan/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mqtt</title>
+      <link>https://slippytrumpet.io/tags/mqtt/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/mqtt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>raspberrypi</title>
+      <link>https://slippytrumpet.io/tags/raspberrypi/</link>
+      <pubDate>Mon, 10 Jul 2017 17:27:33 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/raspberrypi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>daemon</title>
+      <link>https://slippytrumpet.io/tags/daemon/</link>
+      <pubDate>Thu, 08 Jun 2017 10:27:15 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/daemon/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://slippytrumpet.io/tags/linux/</link>
+      <pubDate>Thu, 08 Jun 2017 10:27:15 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pi-zero-w</title>
+      <link>https://slippytrumpet.io/tags/pi-zero-w/</link>
+      <pubDate>Thu, 08 Jun 2017 10:27:15 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/pi-zero-w/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>raspberry</title>
+      <link>https://slippytrumpet.io/tags/raspberry/</link>
+      <pubDate>Thu, 08 Jun 2017 10:27:15 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/raspberry/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>systemd</title>
+      <link>https://slippytrumpet.io/tags/systemd/</link>
+      <pubDate>Thu, 08 Jun 2017 10:27:15 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/systemd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mk2</title>
+      <link>https://slippytrumpet.io/tags/mk2/</link>
+      <pubDate>Thu, 18 May 2017 19:57:59 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/mk2/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>prusa-original</title>
+      <link>https://slippytrumpet.io/tags/prusa-original/</link>
+      <pubDate>Thu, 18 May 2017 19:57:59 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/prusa-original/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>javscript</title>
+      <link>https://slippytrumpet.io/tags/javscript/</link>
+      <pubDate>Fri, 07 Apr 2017 12:36:46 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/javscript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>puckjs</title>
+      <link>https://slippytrumpet.io/tags/puckjs/</link>
+      <pubDate>Fri, 07 Apr 2017 12:36:46 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/puckjs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>webbluetooth</title>
+      <link>https://slippytrumpet.io/tags/webbluetooth/</link>
+      <pubDate>Fri, 07 Apr 2017 12:36:46 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/webbluetooth/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>espruino</title>
+      <link>https://slippytrumpet.io/tags/espruino/</link>
+      <pubDate>Thu, 09 Feb 2017 15:08:26 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/espruino/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>websockets</title>
+      <link>https://slippytrumpet.io/tags/websockets/</link>
+      <pubDate>Thu, 09 Feb 2017 15:08:26 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/websockets/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>esp8266</title>
+      <link>https://slippytrumpet.io/tags/esp8266/</link>
+      <pubDate>Wed, 16 Nov 2016 09:18:08 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/esp8266/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>html5</title>
+      <link>https://slippytrumpet.io/tags/html5/</link>
+      <pubDate>Wed, 16 Nov 2016 09:18:08 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/html5/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nodeMCU</title>
+      <link>https://slippytrumpet.io/tags/nodemcu/</link>
+      <pubDate>Wed, 16 Nov 2016 09:18:08 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/nodemcu/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>riotjs</title>
+      <link>https://slippytrumpet.io/tags/riotjs/</link>
+      <pubDate>Wed, 16 Nov 2016 09:18:08 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/riotjs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TLS</title>
+      <link>https://slippytrumpet.io/tags/tls/</link>
+      <pubDate>Mon, 31 Oct 2016 18:43:50 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/tls/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>letsencrypt</title>
+      <link>https://slippytrumpet.io/tags/letsencrypt/</link>
+      <pubDate>Mon, 31 Oct 2016 18:43:50 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/letsencrypt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>databases</title>
+      <link>https://slippytrumpet.io/tags/databases/</link>
+      <pubDate>Tue, 25 Oct 2016 15:08:26 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/databases/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rethinkdb</title>
+      <link>https://slippytrumpet.io/tags/rethinkdb/</link>
+      <pubDate>Tue, 25 Oct 2016 15:08:26 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/rethinkdb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>startups</title>
+      <link>https://slippytrumpet.io/tags/startups/</link>
+      <pubDate>Tue, 25 Oct 2016 15:08:26 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/tags/startups/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		
+		<meta name="description" content="A blog on the technologies that have been messing with me.">
+		<meta name="generator" content="Hugo 0.56.0-DEV-superdir" />
+		<title>Experiments with Messaging over Ethernet Frames &middot; slippytrumpet.io</title>
+		<link rel="shortcut icon" href="https://slippytrumpet.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/style.css">
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://slippytrumpet.io/css/font-awesome.min.css">
+		
+
+		
+		<link href="https://slippytrumpet.io/index.xml" rel="alternate" type="application/rss+xml" title="slippytrumpet.io" />
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://slippytrumpet.io/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://slippytrumpet.io/posts'>Archive</a>
+	<a href='https://slippytrumpet.io/tags'>Tags</a>
+	<a href='https://slippytrumpet.io/about'>About</a>
+
+	
+
+	
+	<a class="cta" href="https://slippytrumpet.io/index.xml">Subscribe</a>
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        Experiments with Messaging over Ethernet Frames
+                    </h1>
+                    <h2 class="headline">
+                    Jul 10, 2017 17:27
+                    · 684 words
+                    · 4 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://slippytrumpet.io/tags/iot">iot</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/mqtt">mqtt</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/efmq">efmq</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/golang">golang</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/raspberrypi">raspberrypi</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/lan">lan</a>
+                          
+                              <a href="https://slippytrumpet.io/tags/ethernet">ethernet</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                <section id="post-body">
+                    
+
+<h2 id="in-his-article-network-protocol-breakdown-ethernet-and-go-https-medium-com-mdlayher-network-protocol-breakdown-ethernet-and-go-de985d726cc1-matt-layher-describes-the-ethernet-protocol-and-introduces-a-couple-of-libraries-written-in-go">In his article, <a href="https://medium.com/@mdlayher/network-protocol-breakdown-ethernet-and-go-de985d726cc1">Network Protocol Breakdown: Ethernet and Go</a>, Matt Layher describes the Ethernet protocol and introduces a couple of libraries written in Go.</h2>
+
+<p>I read the article with interest. Application communication, at the Ethernet frame level, a lower level than TCP sockets, was something I&rsquo;d never considered before.</p>
+
+<p>Of particular interest was the &ldquo;broadcast&rdquo; nature of the communication. In contrast to sockets - though frames can also be addressed to specific devices - frames can be broadcast network-wide, enabling more than one device to listen and use the frame payload.</p>
+
+<p>I could see some parallels between Ethernet frames and MQTT, a protocol I use frequently in my hardware projects.</p>
+
+<p>I could also see a few distinct advantages over MQTT. I don&rsquo;t want to go into loads of detail here, but, suffice to say, a cheap, convenient but very insecure approach to using MQTT in what are often just &ldquo;hobby&rdquo; hardware projects, is to bounce traffic off of one of the free remote MQTT brokers. And I have been known to do this ;)</p>
+
+<h2 id="so-why-ethernet-frames">So why Ethernet Frames?</h2>
+
+<p>Potentially, by using Ethernet frames there would be no requirement for the MQTT broker so that&rsquo;s one less piece of hardware to configure and manage (if you host your own); messages would stay within the local area network, behind the router firewall, so we&rsquo;re secure by default and; we might achieve higher-speed transmissions, since we would not be sending data all the way off to a remote MQTT broker, only to receive it back from that broker on another machine sitting within the same local area network.</p>
+
+<p>So I set about writing a package on top of Matt&rsquo;s <a href="https://github.com/mdlayher/ethernet">Ethernet</a> and <a href="https://github.com/mdlayher/raw">Raw</a> packages with two objectives in mind:-</p>
+
+<ul>
+<li>Use Ethernet frame messaging to emulate MQTT specifically by providing pub/sub functionality, and;</li>
+<li>Provide an API which would feel familiar to MQTT users and therefore be a relatively simple drop in replacement for a typical MQTT client library.</li>
+</ul>
+
+<h2 id="methodology">Methodology</h2>
+
+<p>The package itself is fairly straightforward - most of the sophisticated stuff is performed by the two packages of Matt&rsquo;s which it imports, but it satisfies both of the objectives mentioned above.</p>
+
+<p>I took the liberty of naming the package EFMQ (for Ethernet Frames Message Queue), and you can find it <a href="http://github.com/olliephillips/efmq">here</a>.</p>
+
+<h3 id="objective-1-provide-pub-sub-functionality">Objective 1 - Provide Pub/Sub functionality</h3>
+
+<p>Pub/Sub is emulated by devices maintaining a list of their own subscriptions and comparing each received message&rsquo;s topic to this list. If topic matches a subscription, the message is put on an unbuffered channel for subsequent processing. Any messages that do not match a subscription are simply discarded.</p>
+
+<h3 id="objective-2-provide-an-api-similar-to-mqtt">Objective 2 - Provide an API similar to MQTT</h3>
+
+<p>This is best illustrated by a couple of examples.</p>
+
+<h4 id="publisher">Publisher</h4>
+
+<p>In this contrived example, we&rsquo;re publishing temperature data on the <code>temp</code> topic every second. <code>wlan0</code> represents the network interface used by the device, in this case a Raspberry Pi Zero W.</p>
+
+<pre><code>mq, err := efmq.NewEFMQ(&quot;wlan0&quot;) 
+if err != nil {
+  log.Fatal(err)
+}
+t := time.NewTicker(1 * time.Second)
+for range t.C {
+  if err := mq.Publish(&quot;temp&quot;, &quot;20.5&quot;); err != nil {
+ 	log.Fatalln(err)
+  }
+}
+</code></pre>
+
+<p><br/></p>
+
+<h4 id="subscriber">Subscriber</h4>
+
+<p>In this example another device in the same network subscribes to the <code>temp</code> topic and then listens indefinitely. Any messages which match the subscription are made available on the <code>mq.Message</code> channel.</p>
+
+<pre><code>mq, err := efmq.NewEFMQ(&quot;wlan0&quot;)
+if err != nil {
+  log.Fatal(err)
+}
+mq.Subscribe(&quot;fermenter&quot;)
+mq.Listen()
+for msg := range mq.Message {
+  fmt.Println(&quot;topic:&quot;, msg.Topic)
+  fmt.Println(&quot;message:&quot;, msg.Payload)
+}
+</code></pre>
+
+<p><br/></p>
+
+<h3 id="performance">Performance</h3>
+
+<p>We&rsquo;re off to a good start by removing the latency transmitting messages via a remote server, and the messaging is direct between two devices, no third device (a local MQTT broker) is needed to relay messages, but as yet I don&rsquo;t have any benchmarks.</p>
+
+<p>In testing, I&rsquo;ve been running a dummy setup using two Raspberry Pi Zero W devices which have been communicating using EFMQ at an interval of 50ms for over a week with no issues. 50ms means 20 messages per second - more than sufficient for most monitoring and control applications that I&rsquo;m likely to want to build!</p>
+
+<p>If you give EFMQ a try please let me know how it works for you!</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.github.com/olliephillips">
+        <i class="fa fa-github"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2019 <i class="fa fa-heart" aria-hidden="true"></i> 
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://slippytrumpet.io/js/jquery-3.3.1.min.js"></script>
+<script src="https://slippytrumpet.io/js/main.js"></script>
+<script src="https://slippytrumpet.io/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

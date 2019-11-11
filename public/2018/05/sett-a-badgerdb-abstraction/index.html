@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        Sett, a BadgerDB abstraction - Slippytrumpet - My blog on the technologies that have been messing with me
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="A little Go package to make BadgerDB easier (for me) to work with" />
+  <meta name="generator" content="Hugo 0.56.0-DEV-superdir with theme pure" />
+  <title>Sett, a BadgerDB abstraction - Slippytrumpet - My blog on the technologies that have been messing with me</title>
+  
+
+  <link rel="stylesheet" href="https://slippytrumpet.io/css/style.css">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css">
+  <meta property="og:title" content="Sett, a BadgerDB abstraction" />
+<meta property="og:description" content="A little Go package to make BadgerDB easier (for me) to work with" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://slippytrumpet.io/2018/05/sett-a-badgerdb-abstraction/" />
+<meta property="article:published_time" content="2018-05-04T10:08:30+01:00" />
+<meta property="article:modified_time" content="2018-05-04T10:08:30+01:00" />
+<meta itemprop="name" content="Sett, a BadgerDB abstraction">
+<meta itemprop="description" content="A little Go package to make BadgerDB easier (for me) to work with">
+
+
+<meta itemprop="datePublished" content="2018-05-04T10:08:30&#43;01:00" />
+<meta itemprop="dateModified" content="2018-05-04T10:08:30&#43;01:00" />
+<meta itemprop="wordCount" content="746">
+
+
+
+<meta itemprop="keywords" content="golang,badgerdb," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Sett, a BadgerDB abstraction"/>
+<meta name="twitter:description" content="A little Go package to make BadgerDB easier (for me) to work with"/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+  <body class="main-center" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/olliephillips" target="_blank">
+            <img class="img-circle img-rotate" src="https://slippytrumpet.io/images/ItsMe2.jpg" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Ollie Phillips</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Software Developer, Accountant</h3>
+          <p style="font-size:12px;" class="hidden-xs hidden-sm hidden-md">This is my Blog on the technologies that have been messing with me</p>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> Cheshire, UK</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/posts">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/categories">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/tags">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/about">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul fclass="category-list" style="font-size:12px;text-transform:uppercase">
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/3d-printing/" class="category-list-link">3d-printing</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/iot/" class="category-list-link">iot</a><span class="category-list-count">6</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/linux/" class="category-list-link">linux</a><span class="category-list-count">2</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/opinion/" class="category-list-link">opinion</a><span class="category-list-count">1</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/programming/" class="category-list-link">programming</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://slippytrumpet.io/categories/web-development/" class="category-list-link">web-development</a><span class="category-list-count">1</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul  style="font-size:12px;text-transform:uppercase">
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/3dprinting/" class="tag-list-link">3dprinting</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/badgerdb/" class="tag-list-link">badgerdb</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/daemon/" class="tag-list-link">daemon</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/databases/" class="tag-list-link">databases</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/drones/" class="tag-list-link">drones</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/efmq/" class="tag-list-link">efmq</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/esp8266/" class="tag-list-link">esp8266</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/espruino/" class="tag-list-link">espruino</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/ethernet/" class="tag-list-link">ethernet</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/gcode/" class="tag-list-link">gcode</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/golang/" class="tag-list-link">golang</a><span
+                    class="tag-list-count">6</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/html5/" class="tag-list-link">html5</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/iot/" class="tag-list-link">iot</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/javscript/" class="tag-list-link">javscript</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/lan/" class="tag-list-link">lan</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/letsencrypt/" class="tag-list-link">letsencrypt</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/linux/" class="tag-list-link">linux</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/mk2/" class="tag-list-link">mk2</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/mqtt/" class="tag-list-link">mqtt</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/multirotor/" class="tag-list-link">multirotor</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/nodemcu/" class="tag-list-link">nodemcu</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/octoprint/" class="tag-list-link">octoprint</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/pi-zero-w/" class="tag-list-link">pi-zero-w</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/prusa-original/" class="tag-list-link">prusa-original</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/puckjs/" class="tag-list-link">puckjs</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/quadcopter/" class="tag-list-link">quadcopter</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/raspberry/" class="tag-list-link">raspberry</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/raspberry-pi/" class="tag-list-link">raspberry-pi</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/raspberrypi/" class="tag-list-link">raspberrypi</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/remote-control/" class="tag-list-link">remote-control</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/rethinkdb/" class="tag-list-link">rethinkdb</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/riotjs/" class="tag-list-link">riotjs</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/startups/" class="tag-list-link">startups</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/systemd/" class="tag-list-link">systemd</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/tls/" class="tag-list-link">tls</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/webbluetooth/" class="tag-list-link">webbluetooth</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://slippytrumpet.io/tags/websockets/" class="tag-list-link">websockets</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+  </div>
+</aside>
+
+    
+    
+  <aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+    <div class="slimContent">
+      <nav id="toc" class="article-toc">
+        <h3 class="toc-title">Catalogue</h3>
+        <div class="toc-content always-active"><nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#a-little-go-package-to-make-badgerdb-easier-for-me-to-work-with">A little Go package to make BadgerDB easier (for me) to work with</a>
+<ul>
+<li><a href="#get-with-badgerdb">Get with BadgerDB</a></li>
+<li><a href="#get-with-sett">Get with Sett</a></li>
+</ul></li>
+<li><a href="#virtual-tables">&ldquo;Virtual&rdquo; tables</a></li>
+<li><a href="#updates">Updates</a></li>
+</ul></li>
+</ul>
+</nav>
+        </div>
+      </nav>
+    </div>
+  </aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/2018/05/sett-a-badgerdb-abstraction/"
+    >Sett, a BadgerDB abstraction</a
+  >
+</h1>
+<br/>
+
+      <div class="article-meta">
+        <span class="article-date">
+  <i class="icon icon-calendar-check"></i>
+<a href="https://slippytrumpet.io/2018/05/sett-a-badgerdb-abstraction/" class="article-date">
+  <time datetime="2018-05-04 10:08:30 &#43;0100 BST" itemprop="datePublished">4 May 2018</time>
+</a>
+</span><span class="article-category">
+  <i class="icon icon-folder"></i>
+  <a class="article-category-link" href="/categories/programming/"> programming </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+    <a class="article-tag-link" href="/tags/golang/"> golang </a>
+    <a class="article-tag-link" href="/tags/badgerdb/"> badgerdb </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/05/sett-a-badgerdb-abstraction/#comments"
+            class="article-comment-link">Comments</a></span>
+<div>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 746 words.</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Count: 4 minutes </span>
+</div>
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+
+<h2 id="a-little-go-package-to-make-badgerdb-easier-for-me-to-work-with">A little Go package to make BadgerDB easier (for me) to work with</h2>
+
+<p>I&rsquo;ve noticed that as an &ldquo;older&rdquo; developer, often, one of the first things I&rsquo;ll do with a new package/API I&rsquo;m using, is abstract it into just the bits I need and/or that my cognitive resources can cope with.</p>
+
+<p>The end result is often something akin to plain english (in terms of code), and while I&rsquo;m not sure this says much for my cognition and memory, I do often wonder why this is not better syntax full stop?</p>
+
+<p>Here&rsquo;s an example. This package, named <a href="https://github.com/olliephillips/sett">Sett</a>, abstracts the <a href="https://github.com/dgraph-io/badger">BadgerDB</a> API, the focus simply on easy reuse of the BadgerDB methods that I&rsquo;m likely to want to use most frequently.</p>
+
+<p>I&rsquo;m not suggesting there&rsquo;s anything wrong with the BadgerDB API, only that, for me, the syntax seems quite complex and is therefore not easy to recall. Hence me writing Sett which literally just hides the complicated code enabling me to be more productive with BadgerDB.</p>
+
+<p>To give one example, below we retrieve the value of a single key  from the data store and print it. First with the BadgerDB method, and then with Sett.</p>
+
+<h3 id="get-with-badgerdb">Get with BadgerDB</h3>
+
+<pre><code>// BadgerDB
+var answer []byte
+err := db.View(func(txn *badger.Txn) error {
+  item, err := txn.Get([]byte(&quot;question&quot;))
+  if err != nil {
+    return err
+  }
+  answer, err := item.Value()
+  if err != nil {
+    return err
+  }
+  return nil
+})
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Printf(&quot;The answer is: %s\n&quot;, answer)
+</code></pre>
+
+<p><br/></p>
+
+<h3 id="get-with-sett">Get with Sett</h3>
+
+<pre><code>// Sett
+answer, err := db.Get(&quot;question&quot;)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Printf(&quot;The answer is: %s\n&quot;, answer)
+</code></pre>
+
+<p><br/>
+Which version can you remember?</p>
+
+<p>I should however point out that in BadgerDB, <code>db.View</code> is a read transaction wrapper.  So, while the above examples both include a single <code>Get</code> transaction, BadgerDB could accomodate more.</p>
+
+<p>We could for example retrieve a second key in the same transaction, which would doubtless be more efficient than the two sequential <code>db.View</code> transactions, required to get two keys when using Sett.</p>
+
+<p>But, realistically, how often will I want more than one key, selected by specific key? Should I find the need, a small modification to the Sett API could facilitate the return of multples keys in the one <code>GET</code> call.</p>
+
+<h2 id="virtual-tables">&ldquo;Virtual&rdquo; tables</h2>
+
+<p>One feature of the Sett API that I find indispensible, is virtual tables.</p>
+
+<p>Tables are effectively created by adding a prefix to the key which is stored in BadgerDB, hence virtual, since tables are not a feature of BadgerDB.</p>
+
+<p>With an interface formalised through the Sett API, I&rsquo;ve found it much easier to reason about the data I&rsquo;m working with, by thinking in terms of tables.</p>
+
+<p>Here&rsquo;s an example which shows how the use of these virtual tables allows key reuse.</p>
+
+<pre><code>s.Table(&quot;client&quot;).Set(&quot;1234&quot;, &quot;client data&quot;)
+// real key is &quot;client1234&quot;
+s.Table(&quot;client&quot;).Get(&quot;1234&quot;)
+// returns &quot;client data&quot;
+
+s.Table(&quot;supplier&quot;).Set(&quot;1234&quot;, &quot;supplier data&quot;)
+// real key is &quot;supplier1234&quot;
+s.Table(&quot;supplier&quot;).Get(&quot;1234&quot;)
+// returns &quot;supplier data&quot;
+</code></pre>
+
+<p><br/>
+Tables also allow us to implement other nice features such as <code>Drop()</code> which, as you might expect, deletes the virtual table or more accurately, all keys with the table prefix.</p>
+
+<h2 id="updates">Updates</h2>
+
+<p>BadgerDB also includes a <code>db.Update</code> transaction wrapper designed to wrap <code>Set</code> and <code>Delete</code> transactions, and it&rsquo;s possible to write or delete multiple items by key.</p>
+
+<p>This is definitely something I want to do efficiently via Sett, so I implemented batch updates - and the API is not dissimilar to the functionality that used to exist in BadgerDB itself!</p>
+
+<p>Items are added to the dataset to be stored using <code>Batchup()</code>`.</p>
+
+<p>Large datasets are split into smaller batches of 500 (by default) and each batch of 500 is passed to a goroutine tasked with inserting those 500 keys. We can achieve very high write speed using concurrency and goroutines, though optimum batchsize will depend on size of the dataset and the performance of your hardware.</p>
+
+<p>Sett splits the dataset into batches for you, in the background, no need to write your own goroutines.</p>
+
+<p>Here&rsquo;s a very simple example which creates a batch of three keys/values, before submitting the batch to BadgerDB for insertion to the &ldquo;client&rdquo; table.</p>
+
+<pre><code>s.Batchup(&quot;hello&quot;, &quot;world&quot;)
+s.Batchup(&quot;hello-again&quot;, &quot;world&quot;)
+s.Batchup(&quot;goodbye&quot;, &quot;world&quot;)
+
+s.Table(&quot;client&quot;).SetBatch()
+</code></pre>
+
+<p><br/>
+There&rsquo;s more to Sett, and the README on Github covers it.</p>
+
+<p>And there&rsquo;s room to improve it. One area of concern is reporting and returning from goroutines which error, and this is something I&rsquo;ll be looking into.</p>
+
+<p>If you find Sett useful, let me know in the comments. If I&rsquo;ve made any errors please also let me know. I&rsquo;m always learning.</p>
+
+    </div>
+  </article>
+<section id="comments">
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+</section>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://slippytrumpet.io/2017/12/octogon-gcode-file-uploader/" title="Octogon G-Code File Uploader"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Newer</span></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="facebook,twitter,linkedin"
+                data-mobile-sites="facebook,twitter,linkedin"></div>
+        </div>
+    </div>
+</nav>
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/olliephillips" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://slippytrumpet.io/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+
+  <div class="copyright">
+    &copy;2015  -
+    2019
+  
+    <div class="publishby">
+        Theme courtesy of <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a> derived from <a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> Pure</a>.
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+   window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/rust.min.js"></script>
+<script type="text/javascript"
+   src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/dockerfile.min.js"></script>
+<script>
+hljs.configure({
+  tabReplace: '    ', 
+  classPrefix: ''     
+                      
+})
+hljs.initHighlightingOnLoad();
+</script>
+<script type="text/javascript" src="https://slippytrumpet.io/js/application.js"></script>
+<script type="text/javascript" src="https://slippytrumpet.io/js/plugin.js"></script>
+<script>
+      (function (window) {
+          var INSIGHT_CONFIG = {
+              TRANSLATION: {
+                  POSTS: 'Posts',
+                  PAGES: 'Pages',
+                  CATEGORIES: 'Categories',
+                  TAGS: 'Tags',
+                  UNTITLED: '(Untitled)',
+              },
+              ROOT_URL: 'https:\/\/slippytrumpet.io\/',
+              CONTENT_URL: 'https:\/\/slippytrumpet.io\/searchindex.json ',
+          };
+          window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+      })(window);
+      </script>
+<script type="text/javascript" src="https://slippytrumpet.io/js/insight.js"></script>
+
+<script defer>
+    var disqus_config = function () {
+        this.page.url = 'https:\/\/slippytrumpet.io\/2018\/05\/sett-a-badgerdb-abstraction\/';
+        this.page.identifier = 'slippytrumpet';
+    };
+    (function () {
+        var d = document, s = d.createElement('script');
+        s.src = '//' + 'slippytrumpet' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-83287802-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>

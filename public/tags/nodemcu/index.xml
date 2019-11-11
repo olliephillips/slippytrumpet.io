@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nodeMCU on Slippytrumpet - My blog on the technologies that have been messing with me</title>
+    <link>https://slippytrumpet.io/tags/nodemcu/</link>
+    <description>Recent content in nodeMCU on Slippytrumpet - My blog on the technologies that have been messing with me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 16 Nov 2016 09:18:08 +0000</lastBuildDate>
+    
+        <atom:link href="https://slippytrumpet.io/tags/nodemcu/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Building a Remote Control Car with Espruino on ESP8266</title>
+      <link>https://slippytrumpet.io/2016/11/building-an-rc-car-with-espruino-on-esp8266/</link>
+      <pubDate>Wed, 16 Nov 2016 09:18:08 +0000</pubDate>
+      
+      <guid>https://slippytrumpet.io/2016/11/building-an-rc-car-with-espruino-on-esp8266/</guid>
+      <description>A broken radio controlled microcar; just lying in a box, useless. A little knowledge of Espruino and winter nights closing in. &amp;ldquo;We can make this car work again - but over Wifi&amp;rdquo;, I told the kids. And that was my first mistake. First, one of those, &amp;ldquo;blimey this is a long post; maybe I won&amp;rsquo;t bother&amp;rdquo; things.. AKA &amp;ldquo;TL;DR&amp;rdquo;.
+Espruino/JavaScript code which runs on a NodeMCU ESP8266 microcontroller and does this.</description>
+    </item>
+    
+  </channel>
+</rss>

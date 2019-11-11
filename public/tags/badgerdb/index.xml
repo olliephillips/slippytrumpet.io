@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>badgerdb on Slippytrumpet - My blog on the technologies that have been messing with me</title>
+    <link>https://slippytrumpet.io/tags/badgerdb/</link>
+    <description>Recent content in badgerdb on Slippytrumpet - My blog on the technologies that have been messing with me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 04 May 2018 10:08:30 +0100</lastBuildDate>
+    
+        <atom:link href="https://slippytrumpet.io/tags/badgerdb/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Sett, a BadgerDB abstraction</title>
+      <link>https://slippytrumpet.io/2018/05/sett-a-badgerdb-abstraction/</link>
+      <pubDate>Fri, 04 May 2018 10:08:30 +0100</pubDate>
+      
+      <guid>https://slippytrumpet.io/2018/05/sett-a-badgerdb-abstraction/</guid>
+      <description>A little Go package to make BadgerDB easier (for me) to work with I&amp;rsquo;ve noticed that as an &amp;ldquo;older&amp;rdquo; developer, often, one of the first things I&amp;rsquo;ll do with a new package/API I&amp;rsquo;m using, is abstract it into just the bits I need and/or that my cognitive resources can cope with.
+The end result is often something akin to plain english (in terms of code), and while I&amp;rsquo;m not sure this says much for my cognition and memory, I do often wonder why this is not better syntax full stop?</description>
+    </item>
+    
+  </channel>
+</rss>
