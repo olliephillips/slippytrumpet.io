@@ -3,6 +3,73 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://slippytrumpet.io/categories/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/2019/11/how-to-make-money-with-crypto-via-itos-and-tokens-part-1/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/posts/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/tags/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/tags/blockchain/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/categories/blockchain/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/tags/cyrptocurrency/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/tags/ethereum/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/categories/ethereum/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/tags/ico/</loc>
+    <lastmod>2019-11-11T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://slippytrumpet.io/about/</loc>
     <lastmod>2019-11-11T14:02:37+02:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -10,34 +77,10 @@
   </url>
   
   <url>
-    <loc>https://slippytrumpet.io/</loc>
-    <lastmod>2019-11-11T14:02:37+02:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://slippytrumpet.io/categories/</loc>
-    <lastmod>2018-05-04T10:08:30+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://slippytrumpet.io/posts/</loc>
-    <lastmod>2018-05-04T10:08:30+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>https://slippytrumpet.io/2018/05/sett-a-badgerdb-abstraction/</loc>
     <lastmod>2018-05-04T10:08:30+01:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://slippytrumpet.io/tags/</loc>
-    <lastmod>2018-05-04T10:08:30+01:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
