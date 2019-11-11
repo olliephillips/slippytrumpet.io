@@ -20,7 +20,7 @@ categories = [
 
 When people think of Cryptocurrencies, if they know what they are, they think of Bitcoin first, and maybe the altcoins, of which there are many, such as Litecoin and Ethereum, to name just two.
 
-When people think of how to make money in cryptocurrency, they might think of speculation first - buy and hold, or buy and trade, or more complex stuff, liking shorting. 
+When people think of how to make money in cryptocurrency, they might think of speculation first - buy and hold, or buy and trade, or more complex stuff, like shorting. 
 
 If they've heard of blockchain, and know even the basics, they'll be aware of mining, and how that "can" earn you rewards for contributing computing power to the network, essentially to validate and encode transactions into an immutable chain of blocks - think of blocks as ledgers for the transactions - hence the name "blockchain".
 
@@ -66,7 +66,7 @@ I suspect that hasn't changed much today.
 
 Final side note: Most of my experience relates to 2018 and early 2019 when I took a deep dive into all this crypto and blockchain stuff.
 
-## So how do this work then? If ITOs are no good to us - why mention them?
+## So how does this work then? If ITOs are no good to us - why mention them?
 
 That's the thing you see, we do need an ITO, but hopefully not long enough to be burned though lack of project viabilty or being defrauded.
 
