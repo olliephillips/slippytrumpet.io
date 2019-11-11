@@ -450,8 +450,11 @@ You&rsquo;re still here? Excellent.</li>
 
 <p>Steering was sorted, but this was a fiddly job and the addition of the servo made it likely the car&rsquo;s body would not fit back on without modification.</p>
 
-<p><img src="/images/micro-servo.png" alt="alt text" title="Micro servo. Fiddly." />
-Pictured: Micro servo, attached to steering rack</p>
+<p><center>
+<img src="/images/micro-servo.png" alt="alt text" title="Micro servo. Fiddly." /></p>
+
+<p>Pictured: Micro servo, attached to steering rack
+</center></p>
 
 <h3 id="next-issue-drive">Next issue, &ldquo;drive&rdquo;</h3>
 
@@ -469,15 +472,21 @@ Pictured: Micro servo, attached to steering rack</p>
 
 <p>But there was no way the car&rsquo;s shell was going to fit back on now, modified or not.</p>
 
-<p><img src="/images/h-bridge-with-motor.png" alt="alt text" title="H-bridge attached to motor" />
-Pictured: L9110S Dual H-bridge module</p>
+<p><center>
+<img src="/images/h-bridge-with-motor.png" alt="alt text" title="H-bridge attached to motor" /></p>
+
+<p>Pictured: L9110S Dual H-bridge module
+</center></p>
 
 <p>I&rsquo;m not going to cover wiring, pin selection nor code yet, since this is not how the car ended up and could confuse.</p>
 
 <p>I&rsquo;ll cover all this later, but here&rsquo;s the finished &ldquo;first attempt&rdquo;. Now devoid of shell, obviously I went to a lot of trouble to make it look like a car again. Check that rear spoiler out!</p>
 
-<p><img src="/images/microcar.png" alt="alt text" title="RC Microcar" />
-Pictured: Micro servo, 3.7v li-ion battery, NodeMCU ESP8266, H-bridge</p>
+<p><center>
+<img src="/images/microcar.png" alt="alt text" title="RC Microcar" /></p>
+
+<p>Pictured: Micro servo, 3.7v li-ion battery, NodeMCU ESP8266, H-bridge
+</center></p>
 
 <p>At this point we had a working car and a basic code library, which combined allowed us to control the car over Telnet (wireless console) to send stop/go/direction commands.</p>
 
@@ -505,8 +514,11 @@ Pictured: Micro servo, 3.7v li-ion battery, NodeMCU ESP8266, H-bridge</p>
 
 <p>We added a buzzer to work as a horn which, as well as being controllable over wifi, we decided would serve to notify us once the car had successfully connected to the Wifi network - there&rsquo;d be no point trying to control the car until it had.</p>
 
-<p><img src="/images/mini.png" alt="alt text" title="Mini" />
-Pictured: RC Mini shell and floorpan, with the NodeMCU and H-bridge module and buzzer glued in.</p>
+<p><center>
+<img src="/images/mini.png" alt="alt text" title="Mini" /></p>
+
+<p>Pictured: RC Mini shell and floorpan, with the NodeMCU and H-bridge module and buzzer glued in.
+</center></p>
 
 <p>The code library also needed to be modified to control the steering. You can find the <a href="https://github.com/olliephillips/espruinoCar">full library on Github here</a>, but here&rsquo;s the control piece.</p>
 
@@ -605,8 +617,11 @@ One thing to note. The pin numbers on the NodeMCU board do not relate to the GPI
 
 <p>The advantage was that we didn&rsquo;t need a direct HTTP connection to the car - something that could be abused. With MQTT the RC car would not serve anything but instead simply listen for messages. It could do this from behind the Wifi router&rsquo;s firewall too.</p>
 
-<p><img src="/images/mqtt.png" alt="alt text" title="MQTT testing" />
-Pictured: Publishing control messages to our RC car.</p>
+<p><center>
+<img src="/images/mqtt.png" alt="alt text" title="MQTT testing" /></p>
+
+<p>Pictured: Publishing control messages to our RC car.
+</center></p>
 
 <p>However I decided it was unlikely we&rsquo;d control the car over the Internet in reality, so it would be sufficient to either connect the RC Car to Wifi, or run the ESP8266 NodeMCU as an access point - whereby it creates a Wifi network we can join, and can expose HTTP on the IP address <code>192.168.4.1</code>.</p>
 
@@ -857,8 +872,11 @@ And that&rsquo;s it!</p>
 
 <p>Finally, my favorite picture if not the best quality one. My two youngest driving their Espruino powered remote control car.</p>
 
-<p><img src="/images/drive-it.png" alt="alt text" title="First drive" />
-Pictured: First drive of our Espruino Wifi remote control car.</p>
+<p><center>
+<img src="/images/drive-it.png" alt="alt text" title="First drive" /></p>
+
+<p>Pictured: First drive of our Espruino Wifi remote control car.
+</center></p>
 
 <p>Have fun!</p>
 

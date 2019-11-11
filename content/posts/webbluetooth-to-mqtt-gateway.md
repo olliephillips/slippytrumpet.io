@@ -30,8 +30,10 @@ So here is [WebbleMQ](https://olliephillips.github.io/webbleMQ/), which is all o
 
 Each Puck is tracked on a connection ID, and depending on the mode that is set, it lets you interact with the connected Pucks in different ways.
 
+<center>
 ![alt text](/images/webblemq.png "The WebbleMQ Interface")
 Pictured. The WebbleMQ interface
+</center>
 
 Though I wrote it specifically for Puck.js, the Web Bluetooth API connection filter is quite broad. It looks for devices which, like the Puck, support the NORDIC UART bluetooth service. So it could well work for other devices which support this service. I haven't tested.
 

@@ -1,15 +1,19 @@
 +++
-date = "2015-06-20T14:02:37+02:00"
+date = "2019-11-11T14:02:37+02:00"
 title = "About"
 hidden = true
 +++
 
-My blog on the technologies that ~~have been messing with me~~ I've been messing with.
+Hi there! This is my blog on the technologies that ~~have been messing with me~~ I've been messing with.
 
-I do a lot of messing. I pick stuff up and put it down. I don’t always finish stuff. 
-But this is how I learn. In fact most of the good stuff I’ve done in my career has roots
-in something I’ve simply been meddling with at some point, usually much earlier. 
+I'm a versatile software developer with strong operations and infrastructure expertise. I've been developing mainly in Go (#golang) since 2014, most recently in financial services. 
 
-I find bigger ideas take time to come together and are usually made up of many smaller ones. Stepping stones if you like.
+I have varied and broad experience in financial, commercial and IT functions and am an excellent communicator with proven ability to work cross-functionally and at all levels of the organisation, and am equally at home building and implementing solutions or scoping and leading their delivery. 
 
-The name "slippytrumpet"? That's a reference to motorcyling and Triumph - and a whole different story. One I hope to come back to.
+I'm also a qualified accountant (ACMA): I moved into software full time about 12 years ago after I disrupted myself.
+
+The name "slippytrumpet"? That's a reference to motorcyling and Triumph - and a whole different story. One I hope to come back to. Plus the domain was doing nothing and the renewal fees are too expensive to have it do nothing. 
+
+I'm in the market for new contracts and new opportunities at the moment, so it's no coincidence that I'm cranking the blog posts out again. Some people call it content marketing, but my mum says it's cyncial and I should be ashamed of myself.
+
+On a plus side, many people have expressed their liking for my particular sense of humour on here, Twitter and Linkedin over the years, by unfollowing me. 

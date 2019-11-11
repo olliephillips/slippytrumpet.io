@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>iot on Slippytrumpet - My blog on the technologies that have been messing with me</title>
+    <title>IoT on Slippytrumpet - My blog on the technologies that have been messing with me</title>
     <link>https://slippytrumpet.io/categories/iot/</link>
-    <description>Recent content in iot on Slippytrumpet - My blog on the technologies that have been messing with me</description>
+    <description>Recent content in IoT on Slippytrumpet - My blog on the technologies that have been messing with me</description>
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Mon, 10 Jul 2017 17:27:33 +0100</lastBuildDate>
     
@@ -46,7 +46,7 @@ What about an interface through which you can program multiple Pucks at the same
       <pubDate>Fri, 17 Mar 2017 16:06:50 +0000</pubDate>
       
       <guid>https://slippytrumpet.io/2017/03/raspberry-pi-zero-w-setup/</guid>
-      <description>Pictured: My Raspberry Pi Zero W stand/rack. Get it on Thingiverse
+      <description>Pictured: My Raspberry Pi Zero W stand/rack. Get it on Thingiverse 
 An end-to-end log of the set-up process I followed from my Macbook What&amp;rsquo;s this all about?  Setting up a Raspberry Pi Zero W in a &amp;ldquo;headless&amp;rdquo; configuration, without a keyboard or monitor; Configuring access to multiple Wifi access points; Securing via passwordless SSH public key only login and Firewall rules configuration; Simple command line Terminal access by configuring Hostname/Hosts; Creating a custom image, which we can reuse next time we want to configure another Pi Zero W.</description>
     </item>
     

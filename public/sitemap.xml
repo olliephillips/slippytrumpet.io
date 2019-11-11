@@ -3,6 +3,19 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://slippytrumpet.io/about/</loc>
+    <lastmod>2019-11-11T14:02:37+02:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://slippytrumpet.io/</loc>
+    <lastmod>2019-11-11T14:02:37+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://slippytrumpet.io/categories/</loc>
     <lastmod>2018-05-04T10:08:30+01:00</lastmod>
     <priority>0</priority>
@@ -19,12 +32,6 @@
     <lastmod>2018-05-04T10:08:30+01:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://slippytrumpet.io/</loc>
-    <lastmod>2018-05-04T10:08:30+01:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>
@@ -127,6 +134,12 @@
   </url>
   
   <url>
+    <loc>https://slippytrumpet.io/categories/iot/</loc>
+    <lastmod>2017-07-10T17:27:33+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://slippytrumpet.io/tags/efmq/</loc>
     <lastmod>2017-07-10T17:27:33+01:00</lastmod>
     <priority>0</priority>
@@ -134,12 +147,6 @@
   
   <url>
     <loc>https://slippytrumpet.io/tags/ethernet/</loc>
-    <lastmod>2017-07-10T17:27:33+01:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://slippytrumpet.io/categories/iot/</loc>
     <lastmod>2017-07-10T17:27:33+01:00</lastmod>
     <priority>0</priority>
   </url>
@@ -182,13 +189,13 @@
   </url>
   
   <url>
-    <loc>https://slippytrumpet.io/categories/linux/</loc>
+    <loc>https://slippytrumpet.io/tags/linux/</loc>
     <lastmod>2017-06-08T10:27:15+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://slippytrumpet.io/tags/linux/</loc>
+    <loc>https://slippytrumpet.io/categories/linux/</loc>
     <lastmod>2017-06-08T10:27:15+01:00</lastmod>
     <priority>0</priority>
   </url>
@@ -366,13 +373,6 @@
     <loc>https://slippytrumpet.io/tags/startups/</loc>
     <lastmod>2016-10-25T15:08:26+01:00</lastmod>
     <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://slippytrumpet.io/about/</loc>
-    <lastmod>2015-06-20T14:02:37+02:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   
   <url>

@@ -17,8 +17,11 @@ categories = [
 
 ## We wanted to build a racing drone on a 3D printed frame
 
+<center>
 ![alt text](/images/drone.jpg "Completed build")
+
 Pictured: Completed build
+</center>
 
 And I wanted to document it here - the build; the programming bit; the learning to fly bit..
 
@@ -34,7 +37,9 @@ So, all we have in this post is a single video and a couple of images. The video
 <br/>
 This image is the [Peon 230 frame](https://www.thingiverse.com/thing:629338) we printed for the frame. You can get it on Thingiverse.
 
+<center>
 ![alt text](https://thingiverse-production-new.s3.amazonaws.com/renders/37/d1/c6/95/aa/IMG_0151_preview_featured.JPG "Peon 230 - Quadcopter")
+</center>
 
 3D printing the frame has one major benefit - you break a part you can just print another. Even with fairly high infills we've broken every piece but three of the arms while learning to fly it - the worst damage when I hit a tree - and whilst it takes a bit of time to reprint the parts, it's better than buying new frames! 
 

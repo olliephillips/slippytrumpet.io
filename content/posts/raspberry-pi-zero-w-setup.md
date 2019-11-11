@@ -17,8 +17,11 @@ categories = [
 
 +++
 
+<center>
 ![alt text](https://thingiverse-production-new.s3.amazonaws.com/renders/ee/4c/d9/f7/3d/326e57726fc5c2070bc5c19417e1814d_preview_featured.jpeg "Pi Zero rack/stand")
+
 Pictured: My Raspberry Pi Zero W stand/rack. [Get it on Thingiverse](https://www.thingiverse.com/thing:2169943)
+</center>
 
 # An end-to-end log of the set-up process I followed from my Macbook
 

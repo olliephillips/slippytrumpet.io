@@ -14,8 +14,11 @@ categories = [
 ]
 +++
 
+<center>
 ![alt text](https://thingiverse-production-new.s3.amazonaws.com/renders/20/4b/b7/7b/2d/290f686d06ad5516adbf22594411ad7e_preview_featured.JPG "3D printed Pump mount")
-Picture. Pump mount.
+
+Pictured: Pump mount.
+</center>
 
 ## So...
 
@@ -25,8 +28,11 @@ Picture. Pump mount.
 
 2) You can spend thousands on a 3D printer. Don't. Prusa is reasonable cost for its ability. That's borne out by the waiting list I guess.
 
+<center>
 ![alt text](https://thingiverse-production-new.s3.amazonaws.com/renders/0f/ab/be/96/00/f56a6cd1de2b9a1f84e5bf135fca885b_preview_featured.JPG "SD Card holder")
-<center>Picture. SD card holder</center>
+
+Pictured: SD card holder
+</center>
 
 3) Filament can kill you. Buy cheap and it's going to smart a bit. Your prints won't stick, or will fail at some point. Your interested children will disappear fast. Turns out, there's no glory in 3D Printer configuration management.
 
@@ -34,8 +40,11 @@ Picture. Pump mount.
 
 5) Cheap filament will dement you. It will drip from the extruder, it will form "elephants foot" and any successful prints will be brittle. You'll need more infill to get the same model strength. In fact,  I wonder if it's actually cheaper at all when all said and done.
 
+<center>
 ![alt text](https://thingiverse-production-new.s3.amazonaws.com/renders/07/8c/28/de/58/677d358891418b54373085bacf9778b6_preview_featured.JPG "Mac Magsafe Protect")
-<center>Picture. Magsafe cable protection</center>
+
+Pictured: Magsafe cable protection
+</center>
 
 6) Heated beds are great. I get extra adhesion. But often not enough. More than a few times I've used the Pritstick - just to be sure.
 
@@ -55,8 +64,11 @@ Picture. Pump mount.
 
 This is [me on thingiverse](https://www.thingiverse.com/slippytrumpet/designs). [Learning as I go](https://www.thingiverse.com/slippytrumpet/designs). Show me yours.
 
+<center>
 ![alt text](https://cdn.thingiverse.com/renders/18/1c/e3/85/7a/b88a46457e98d32ef92f633f82a1fe40_preview_featured.jpeg "Fidget Spinner")
-<center>Picture. Fidget Spinner</center>
+
+Pictured: Fidget Spinner
+</center>
 
 
 

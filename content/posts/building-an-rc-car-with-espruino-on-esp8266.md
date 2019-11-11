@@ -68,8 +68,11 @@ In their place I sourced a tiny micro servo on ebay, glued it in and created a s
 
 Steering was sorted, but this was a fiddly job and the addition of the servo made it likely the car's body would not fit back on without modification.
 
+<center>
 ![alt text](/images/micro-servo.png "Micro servo. Fiddly.")
+
 Pictured: Micro servo, attached to steering rack
+</center>
 
 ### Next issue, "drive"
 After some help from a couple of people in the Espruino forums I better understood what was involved in controlling the motor - which required switching the supply polarity to provide forward and reverse motion.
@@ -86,15 +89,21 @@ After more discussion, and the prospect of making a H-bridge circuit myself from
 
 But there was no way the car's shell was going to fit back on now, modified or not.
 
+<center>
 ![alt text](/images/h-bridge-with-motor.png "H-bridge attached to motor")
+
 Pictured: L9110S Dual H-bridge module
+</center>
 
 I'm not going to cover wiring, pin selection nor code yet, since this is not how the car ended up and could confuse. 
 
 I'll cover all this later, but here's the finished "first attempt". Now devoid of shell, obviously I went to a lot of trouble to make it look like a car again. Check that rear spoiler out!
 
+<center>
 ![alt text](/images/microcar.png "RC Microcar")
+
 Pictured: Micro servo, 3.7v li-ion battery, NodeMCU ESP8266, H-bridge
+</center>
 
 At this point we had a working car and a basic code library, which combined allowed us to control the car over Telnet (wireless console) to send stop/go/direction commands. 
 
@@ -122,8 +131,11 @@ Wiring had to be modified slightly to accomodated a second motor attached to the
 
 We added a buzzer to work as a horn which, as well as being controllable over wifi, we decided would serve to notify us once the car had successfully connected to the Wifi network - there'd be no point trying to control the car until it had.
 
+<center>
 ![alt text](/images/mini.png "Mini")
+
 Pictured: RC Mini shell and floorpan, with the NodeMCU and H-bridge module and buzzer glued in.
+</center>
 
 The code library also needed to be modified to control the steering. You can find the [full library on Github here](https://github.com/olliephillips/espruinoCar), but here's the control piece.
 
@@ -222,8 +234,11 @@ MQTT seemed a good choice for communication. The RC car could subscribe (listen)
 
 The advantage was that we didn't need a direct HTTP connection to the car - something that could be abused. With MQTT the RC car would not serve anything but instead simply listen for messages. It could do this from behind the Wifi router's firewall too.
 
+<center>
 ![alt text](/images/mqtt.png "MQTT testing")
+
 Pictured: Publishing control messages to our RC car.
+</center>
 
 However I decided it was unlikely we'd control the car over the Internet in reality, so it would be sufficient to either connect the RC Car to Wifi, or run the ESP8266 NodeMCU as an access point - whereby it creates a Wifi network we can join, and can expose HTTP on the IP address ```192.168.4.1```.  
 
@@ -475,8 +490,11 @@ Don't forget, if some of the above code snippets are not that clear, [all the co
 
 Finally, my favorite picture if not the best quality one. My two youngest driving their Espruino powered remote control car. 
 
+<center>
 ![alt text](/images/drive-it.png "First drive")
+
 Pictured: First drive of our Espruino Wifi remote control car.
+</center>
 
 Have fun!
 

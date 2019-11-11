@@ -5,10 +5,21 @@
     <link>https://slippytrumpet.io/</link>
     <description>Recent content on Slippytrumpet - My blog on the technologies that have been messing with me</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 04 May 2018 10:08:30 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 11 Nov 2019 14:02:37 +0200</lastBuildDate>
     
         <atom:link href="https://slippytrumpet.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>About</title>
+      <link>https://slippytrumpet.io/about/</link>
+      <pubDate>Mon, 11 Nov 2019 14:02:37 +0200</pubDate>
+      
+      <guid>https://slippytrumpet.io/about/</guid>
+      <description>Hi there! This is my blog on the technologies that have been messing with me I&amp;rsquo;ve been messing with.
+I&amp;rsquo;m a versatile software developer with strong operations and infrastructure expertise. I&amp;rsquo;ve been developing mainly in Go (#golang) since 2014, most recently in financial services.
+I have varied and broad experience in financial, commercial and IT functions and am an excellent communicator with proven ability to work cross-functionally and at all levels of the organisation, and am equally at home building and implementing solutions or scoping and leading their delivery.</description>
+    </item>
     
     <item>
       <title>Sett, a BadgerDB abstraction</title>
@@ -36,7 +47,7 @@ Why? My 3D Printer is right next to me at the moment. But getting files onto it,
       <pubDate>Thu, 30 Nov 2017 21:34:28 +0100</pubDate>
       
       <guid>https://slippytrumpet.io/2017/11/3d-printed-drone-build/</guid>
-      <description>We wanted to build a racing drone on a 3D printed frame Pictured: Completed build
+      <description>We wanted to build a racing drone on a 3D printed frame  Pictured: Completed build 
 And I wanted to document it here - the build; the programming bit; the learning to fly bit..
 But then we got into it. And I soon realised 3D printing the chassis/frame was actually going to be the easy bit.
 Drones builds are a massive topic - when you&amp;rsquo;re starting out. Involved, time consuming, but hugely rewarding, is the best way I can sum it up.</description>
@@ -68,7 +79,7 @@ But it feels clunky.</description>
       <pubDate>Thu, 18 May 2017 19:57:59 +0100</pubDate>
       
       <guid>https://slippytrumpet.io/2017/05/3d-printing-learnings-shared/</guid>
-      <description>Picture. Pump mount.
+      <description>Pictured: Pump mount. 
 So&amp;hellip; I have a Prusa Original Mk2 3D Printer. Learnings specific to this machine, though I expect you could generalise much of this. 1) Prusa Original Mk2 is a great product. Mine was a kit. I built it over 4 evenings, and on the few occasions I&amp;rsquo;ve contacted support, they&amp;rsquo;ve been great.
 2) You can spend thousands on a 3D printer. Don&amp;rsquo;t. Prusa is reasonable cost for its ability.</description>
     </item>
@@ -89,7 +100,7 @@ What about an interface through which you can program multiple Pucks at the same
       <pubDate>Fri, 17 Mar 2017 16:06:50 +0000</pubDate>
       
       <guid>https://slippytrumpet.io/2017/03/raspberry-pi-zero-w-setup/</guid>
-      <description>Pictured: My Raspberry Pi Zero W stand/rack. Get it on Thingiverse
+      <description>Pictured: My Raspberry Pi Zero W stand/rack. Get it on Thingiverse 
 An end-to-end log of the set-up process I followed from my Macbook What&amp;rsquo;s this all about?  Setting up a Raspberry Pi Zero W in a &amp;ldquo;headless&amp;rdquo; configuration, without a keyboard or monitor; Configuring access to multiple Wifi access points; Securing via passwordless SSH public key only login and Firewall rules configuration; Simple command line Terminal access by configuring Hostname/Hosts; Creating a custom image, which we can reuse next time we want to configure another Pi Zero W.</description>
     </item>
     
@@ -131,17 +142,6 @@ For Go applications, there&amp;rsquo;s no automatic install and renewal route, t
       <guid>https://slippytrumpet.io/2016/10/rethinkdb-the-end-of-the-beginning/</guid>
       <description>Maybe you heard. The commercial entity behind RethinkDB will soon be no more. The project will hopefully continue as community driven open source, although the details are unclear - the who and how has yet to be ironed out.
 From my first encounter with the database it was clear that RethinkDB had something going on. A performant document oriented database had to be a given, yes. But the glorious admin UI, effortless clustering, and intuitive ReQL query language were lovely to see and use; the extensive documentation and examples, great to fall back on.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://slippytrumpet.io/about/</link>
-      <pubDate>Sat, 20 Jun 2015 14:02:37 +0200</pubDate>
-      
-      <guid>https://slippytrumpet.io/about/</guid>
-      <description>My blog on the technologies that have been messing with me I&amp;rsquo;ve been messing with.
-I do a lot of messing. I pick stuff up and put it down. I don’t always finish stuff. But this is how I learn. In fact most of the good stuff I’ve done in my career has roots in something I’ve simply been meddling with at some point, usually much earlier.
-I find bigger ideas take time to come together and are usually made up of many smaller ones.</description>
     </item>
     
   </channel>
