@@ -70,7 +70,7 @@ Final side note: Most of my experience relates to 2018 and early 2019 when I too
 
 That's the thing you see, we do need an ITO, but hopefully not long enough to be burned though lack of project viabilty or being defrauded.
 
-I'm going to get into the nitty gritty tomorrow in Part 2 which will be the final part.
+I'm going to get into the nitty gritty tomorrow in Part 2 which will be the penultimate part.
 
 I'm not going to be stringing it out - I've got a job or lucrative contract to find, so can't be writing on here, all day.
 
