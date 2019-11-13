@@ -1,5 +1,5 @@
 +++
-title = "How to make money with Crypto via ITOs and tokens (Part 2) - Draft"
+title = "How to make money with Crypto via ITOs and tokens (Part 2)"
 description = "It is possible to make money on Cryptocurrencies, in an interesting but short window post ITO (Initial Token Offering). In this second and of three installments we get to it."
 date = "2019-11-12T15:27:33+01:00"
 
