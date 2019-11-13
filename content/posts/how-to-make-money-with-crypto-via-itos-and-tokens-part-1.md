@@ -1,6 +1,6 @@
 +++
 title = "How to make money with Crypto via ITOs and tokens (Part 1)"
-description = "It is possible to make money on Cryptocurrencies, in an interesting but short window post ITO (Intial Token Offering)"
+description = "It is possible to make money on Cryptocurrencies, in an interesting but short window post ITO (Initial Token Offering)"
 date = "2019-11-11T17:27:33+01:00"
 
 tags = [
@@ -16,7 +16,7 @@ categories = [
 ]
 +++
 
-## It is possible to make money on Cryptocurrencies, in an interesting but short window post ITO (Intial Token Offering). Trust me there's more here than a clickbait title, but first we need to introduce our subject.
+## It is possible to make money on Cryptocurrencies, in an interesting but short window post ITO (Initial Token Offering). Trust me there's more here than a clickbait title, but first we need to introduce our subject.
 
 When people think of Cryptocurrencies, if they know what they are, they think of Bitcoin first, and maybe the altcoins, of which there are many, such as Litecoin and Ethereum, to name just two.
 
@@ -46,7 +46,7 @@ As a side note, I'm mainly speaking of the "Proof of Work" model and many curren
 
 ### So what about ITOs?
 
-An ITO, or Intial Token Offering represents the sale of cryptotokens to the public. Think of an ITO as similar to an ICO (Intial Coin Offering), and as similar to an IPO (Intial Public Offering) which is the offer of company shares to the public.
+An ITO, or Initial Token Offering represents the sale of cryptotokens to the public. Think of an ITO as similar to an ICO (Initial Coin Offering), and as similar to an IPO (Initial Public Offering) which is the offer of company shares to the public.
 
 In practice ICO and ITO get used interchangeably, though they are not quite the same. In one you get coins - new cryptocurrency - in the other you get tokens, something which is a product of what is known as a smart-contract.  
 

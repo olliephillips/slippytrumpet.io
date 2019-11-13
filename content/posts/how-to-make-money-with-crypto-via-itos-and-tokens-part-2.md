@@ -16,11 +16,11 @@ categories = [
 ]
 +++
 
-## It is possible to make money on Cryptocurrencies, in an interesting but short window post ITO (Intial Token Offering). In this second of three installments we get to it!
+## It is possible to make money on Cryptocurrencies, in an interesting but short window post ITO (Initial Token Offering). In this second of three installments we get to it!
 
 In [part 1 we set the scene](/2019/11/how-to-make-money-with-crypto-via-itos-and-tokens-part-1/), and I left you with this teaser - the key to this is liquidity, or rather the lack of liquidity. It's also about information, and we'll get to that too. 
 
-#### Let's pick up it there. What do I mean by liquidity? 
+#### Let's pick it up there. What do I mean by liquidity? 
 
 Efficient markets are those where pretty much everything is known about the value of something, and it is factored in to the price. 
 
