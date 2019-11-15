@@ -80,7 +80,7 @@ Smart-contracts are programs. For instance, smart-contracts can be destroyed; th
 
 Those are just three scenarios that spring to mind. For these scenarios to happen, provision for them needs to be written into the initial contract from the get-go, because you don't get a second chance to publish, because the blockchain can't (normally) be changed.
 
-Sometimes a smart-contract is effectively closed-source for a layperson investor. All you can see is is an "ABI" - the bytecode - but an ITO will typically provide a human-readable form of the contract, most likely in a language known as Solidity.
+Sometimes a smart-contract is effectively closed-source for a layperson investor. All you can see is is an ABI or Application Binary Interface - the bytecode - but an ITO will typically provide a human-readable form of the contract, most likely in a language known as Solidity.
 
 I say "human-readable", but Solidity is a higher level programming language, a thing that compiles to the bytecode we mentioned; you still need to be able to read a program's logic whatever the language.
 
