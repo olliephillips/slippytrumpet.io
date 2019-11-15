@@ -14,6 +14,6 @@ I'm also a qualified accountant (ACMA): I moved into software full time about 12
 
 The name "slippytrumpet"? That's a reference to motorcyling and Triumph - and a whole different story. One I hope to come back to. Plus the domain was doing nothing and the renewal fees are too expensive to have it do nothing. 
 
-I'm in the market for new contracts and new opportunities at the moment, so it's no coincidence that I'm cranking the blog posts out again. Some people call it content marketing, but my mum says it's cyncial and I should be ashamed of myself.
+I'm in the market for new contracts and new opportunities at the moment, so it's no coincidence that I'm cranking the blog posts out again. Some people call it content marketing, but my mum says it's cynical and that I should be ashamed of myself.
 
 On a plus side, many people have expressed their liking for my particular sense of humour on here, Twitter and Linkedin over the years, by unfollowing me. 
