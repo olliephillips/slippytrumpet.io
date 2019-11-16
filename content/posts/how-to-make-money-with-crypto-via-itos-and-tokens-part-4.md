@@ -165,19 +165,37 @@ Less naivety.
 
 But, by this time, if you've played the game correctly, you'll be long gone and looking for another ITO.
 
-Nothing about any of what we are doing is illegal. We are taking part in a free market, which though inefficient, is driven by demand and supply. Information, is available but some choose to ignore it, or don't understand it, or place too much significance on it. 
+Nothing about any of what we are doing is illegal. We are taking part in a free market, which though inefficient, is driven by demand and supply. Information, is available but some choose to ignore it, or don't understand it, or place too much significance on it. It moves towards efficiency as this sort of inefficiency gets removed, and information and knowledge improves - like any market.
 
-In closing, I must say, it's unfortunate that the gains I made in ITOs will have been mirrored by others making losses. But that is a fact of life in any transaction where you don't have the knowledge of the other party. 
+In closing, I must say, it's unfortunate that the gains I made in ITOs will have been mirrored by others making losses. 
 
-I lost a lot of money in a regulated market remember.
+But that is a fact of life in any market where you don't have the knowledge of the other parties.
 
-But it is nice to be on the right side of things for a change. Like "Woodford", who has operated perfectly legally also, and is sitting very pretty thankyou, despite me and many others (oh sorry just me - I forgot) wiping my/their face on a sizeable loss on that investment :D
+I lost a lot of money in a regulated market remember?
 
-That's what this entire series was about, making sure you're not the dummy, in an ITO. It's no more, or less, than one massive risk warning, because the FCA aren't going to issue one. And, too many people want to profit on your naivety in this world.
+So, that's what this entire series was about, making sure you're not the dummy. 
+
+It's no more, and no less, than one massive risk warning, because the FCA isn't going to issue one (at the moment). 
+
+Blockchain is not going away. To ensure the network is decentralized requires that value is offered in return for participation: currency or tokens.
+
+Whether you agree that cryptocurrency and tokens are "valuable" is irrelevant. The market believes.
+
+Fiat currencies are valuable for what they facilitate rather than any intrinsic value of their own - it's paper! 
+
+Sure, you can buy a dollar of gold with a dollar, but you can't swap every dollar for a dollar of gold. It's just not there.
+
+Where value is created, there'll be people who want to take that value from you, by any number of means as we have seen.  
+
+This series was designed to explain a lot of stuff that will make the lay person safer in crypto as they experiment, as they surely will at some point. It's quite possibly useful for in any realm of investment too. 
+
+Finally, I don't mind admitting, I've learnt some of this myself, the hard way. The hard lessons are the best teachers: they say :/
+
+### That's the End!
 
 I really hoped you enjoyed this series as much as I've enjoyed putting it together. I hope it's evolved into the story I wanted to try and tell. And, that the knowledge sticks and is transferrable.
 
-If anything needs clarifying, let me know in the comments.
+If anything needs clarifying, let me know in the comments, and I'll do my best to elaborate.
 
 #### Did I tell you I'm in the market for a job or a lucrative contract? 
 
