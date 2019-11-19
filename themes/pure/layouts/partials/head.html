@@ -11,13 +11,9 @@
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <!-- Color theme for statusbar -->
   <meta name="theme-color" content="#000000" />
-  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
   <meta http-equiv="window-target" content="_top" />
-  <!-- baidu & google verification  -->
-  {{ with .Site.Params.baiduVerification }}
-  <meta name="baidu-site-verification" content="{{.}}" />{{ end }}
-  {{ with .Site.Params.googleVerification }}
-  <meta name="google-site-verification" content="{{.}}" />{{ end }}
+  <!-- google verification  -->
+  <meta name="google-site-verification" content="{{.}}" />
   {{- if .Keywords -}}
   {{ $length := len .Keywords | add -1 -}}
   <meta name="keywords"
@@ -35,8 +31,6 @@
   {{- else if .Site.Params.description -}}
   <meta name="description" content="{{ .Site.Params.description | safeHTML }}" />
   {{- end -}}
-
-
 
   <!-- Site Generator -->
   <meta name="generator" content="Hugo {{ .Site.Hugo.Version }} with theme pure" />
@@ -72,4 +66,4 @@
       <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
     <![endif]-->` | safeHTML }}
 
-</head>
+  {{- partial "_script/analytics.html" . }}
